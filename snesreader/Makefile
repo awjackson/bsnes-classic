@@ -24,7 +24,7 @@ objects += adler32 crc32 inffast inflate inftrees zutil
 # 7-zip
 objects += 7zAlloc 7zBuf 7zCrc 7zDecode 7zExtract 7zHeader 7zIn 7zItem 7zStream Bcj2 Bra86 LzmaDec
 # unrar
-objects += archive arcread coder crc encname extract getbits model rarvm rarvmtbl rawread suballoc unicode unpack unpack15 unpack20 unrar unrar_misc unrar_open
+# objects += archive arcread coder crc encname extract getbits model rarvm rarvmtbl rawread suballoc unicode unpack unpack15 unpack20 unrar unrar_misc unrar_open
 # micro-bunzip
 objects += micro-bunzip
 # jma
