@@ -26,7 +26,7 @@ int16_t Gamepad::status(unsigned index, unsigned id) const {
     if(id == (unsigned)SNES::Input::JoypadID::Right && left.cachedState) return 0;
   }
 
-  switch(id) {
+  switch((SNES::Input::JoypadID)id) {
     case SNES::Input::JoypadID::Up: return up.cachedState;
     case SNES::Input::JoypadID::Down: return down.cachedState;
     case SNES::Input::JoypadID::Left: return left.cachedState;
@@ -190,7 +190,7 @@ int16_t Asciipad::status(unsigned index, unsigned id) const {
     if(id == (unsigned)SNES::Input::JoypadID::Right && left.cachedState) return 0;
   }
 
-  switch(id) {
+  switch((SNES::Input::JoypadID)id) {
     case SNES::Input::JoypadID::Up: return up.cachedState;
     case SNES::Input::JoypadID::Down: return down.cachedState;
     case SNES::Input::JoypadID::Left: return left.cachedState;
@@ -260,7 +260,7 @@ slowMotion("Slow Motion", string() << "input." << configName << ".slowMotion") {
 //
 
 int16_t Mouse::status(unsigned index, unsigned id) const {
-  switch(id) {
+  switch((SNES::Input::MouseID)id) {
     case SNES::Input::MouseID::X: return x.cachedState;
     case SNES::Input::MouseID::Y: return y.cachedState;
     case SNES::Input::MouseID::Left: return left.cachedState;
@@ -286,7 +286,7 @@ right("Right Button", string() << "input." << configName << ".right") {
 //
 
 int16_t SuperScope::status(unsigned index, unsigned id) const {
-  switch(id) {
+  switch((SNES::Input::SuperScopeID)id) {
     case SNES::Input::SuperScopeID::X: return x.cachedState;
     case SNES::Input::SuperScopeID::Y: return y.cachedState;
     case SNES::Input::SuperScopeID::Trigger: return trigger.cachedState;
@@ -319,7 +319,7 @@ pause("Pause", string() << "input." << configName << ".pause") {
 //
 
 int16_t Justifier::status(unsigned index, unsigned id) const {
-  switch(id) {
+  switch((SNES::Input::JustifierID)id) {
     case SNES::Input::JustifierID::X: return x.cachedState;
     case SNES::Input::JustifierID::Y: return y.cachedState;
     case SNES::Input::JustifierID::Trigger: return trigger.cachedState;
