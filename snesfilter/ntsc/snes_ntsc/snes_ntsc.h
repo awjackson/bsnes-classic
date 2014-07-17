@@ -132,20 +132,28 @@ statement in a block (unless you're using C++). */
 
 /* private */
 enum { snes_ntsc_entry_size = 128 };
-enum { snes_ntsc_palette_size = 0x2000 };
-typedef unsigned long snes_ntsc_rgb_t;
+enum { snes_ntsc_palette_size = 0x8000 };
+
+#if UINT_MAX == 0xFFFFFFFF
+	typedef unsigned int snes_ntsc_rgb_t;
+#elif ULONG_MAX == 0xFFFFFFFF
+	typedef unsigned long snes_ntsc_rgb_t;
+#else
+	#error "Need 32-bit int type"
+#endif
+
 struct snes_ntsc_t {
 	snes_ntsc_rgb_t table [snes_ntsc_palette_size] [snes_ntsc_entry_size];
 };
 enum { snes_ntsc_burst_size = snes_ntsc_entry_size / snes_ntsc_burst_count };
 
 #define SNES_NTSC_RGB16( ktable, n ) \
-	(snes_ntsc_rgb_t const*) (ktable + ((n & 0x001E) | (n >> 1 & 0x03E0) | (n >> 2 & 0x3C00)) * \
-			(snes_ntsc_entry_size / 2 * sizeof (snes_ntsc_rgb_t)))
+	(snes_ntsc_rgb_t const*) (ktable + ((n & 0x001F) | (n >> 1 & 0x03E0) | (n >> 1 & 0x7C00)) * \
+			(snes_ntsc_entry_size * sizeof (snes_ntsc_rgb_t)))
 
 #define SNES_NTSC_BGR15( ktable, n ) \
-	(snes_ntsc_rgb_t const*) (ktable + ((n << 9 & 0x3C00) | (n & 0x03E0) | (n >> 10 & 0x001E)) * \
-			(snes_ntsc_entry_size / 2 * sizeof (snes_ntsc_rgb_t)))
+	(snes_ntsc_rgb_t const*) (ktable + ((n << 10 & 0x7C00) | (n & 0x03E0) | (n >> 10 & 0x001F)) * \
+			(snes_ntsc_entry_size * sizeof (snes_ntsc_rgb_t)))
 
 /* common 3->7 ntsc macros */
 #define SNES_NTSC_BEGIN_ROW_6_( pixel0, pixel1, pixel2, ENTRY, table ) \

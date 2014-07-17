@@ -90,21 +90,18 @@ void snes_ntsc_init( snes_ntsc_t* ntsc, snes_ntsc_setup_t const* setup )
 	
 	for ( entry = 0; entry < snes_ntsc_palette_size; entry++ )
 	{
-		/* Reduce number of significant bits of source color. Clearing the
-		low bits of R and B were least notictable. Modifying green was too
-		noticeable. */
-		int ir = entry >> 8 & 0x1E;
-		int ig = entry >> 4 & 0x1F;
-		int ib = entry << 1 & 0x1E;
+		int ir = entry >> 10 & 0x1F;
+		int ig = entry >> 5  & 0x1F;
+		int ib = entry       & 0x1F;
 		
 		#if SNES_NTSC_BSNES_COLORTBL
 			if ( setup->bsnes_colortbl )
 			{
 				int bgr15 = (ib << 10) | (ig << 5) | ir;
 				unsigned long rgb16 = setup->bsnes_colortbl [bgr15];
-				ir = rgb16 >> 11 & 0x1E;
+				ir = rgb16 >> 11 & 0x1F;
 				ig = rgb16 >>  6 & 0x1F;
-				ib = rgb16       & 0x1E;
+				ib = rgb16       & 0x1F;
 			}
 		#endif
 		
