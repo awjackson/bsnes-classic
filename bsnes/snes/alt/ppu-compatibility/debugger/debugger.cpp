@@ -288,7 +288,7 @@ bool PPUDebugger::property(unsigned id, string &name, string &value) {
   item("BG4 Subscreen Window Enable", regs.sub_window_enabled[BG4]);
   item("OAM Subscreen Window Enable", regs.sub_window_enabled[OAM]);
 
-  static char color_window_mask_mode[4][32] = { "Always", "Never", "Inside Window Only", "Outside Window Only" };
+  static char color_window_mask_mode[4][32] = { "Always", "Inside Window Only", "Outside Window Only", "Never" };
 
   //$2130
   item("$2130", "");
