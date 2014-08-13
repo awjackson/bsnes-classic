@@ -87,22 +87,15 @@ inline uint16 PPU::get_pixel_swap(uint32 x) {
 inline void PPU::render_line_output() {
   uint16 *ptr = (uint16*)output + (line * 1024) + ((interlace() && field()) ? 512 : 0);
   uint16 *luma = light_table[regs.display_brightness];
-  uint16 curr, prev;
 
   if(!regs.pseudo_hires && regs.bg_mode != 5 && regs.bg_mode != 6) {
     for(unsigned x = 0; x < 256; x++) {
-      curr = luma[get_pixel_normal(x)];
-      *ptr++ = curr;
+      *ptr++ = luma[get_pixel_normal(x)];
     }
   } else {
     for(unsigned x = 0, prev = 0; x < 256; x++) {
-      curr = luma[get_pixel_swap(x)];
-      *ptr++ = (prev + curr - ((prev ^ curr) & 0x0421)) >> 1;
-      prev = curr;
-
-      curr = luma[get_pixel_normal(x)];
-      *ptr++ = (prev + curr - ((prev ^ curr) & 0x0421)) >> 1;
-      prev = curr;
+      *ptr++ = luma[get_pixel_swap(x)];
+      *ptr++ = luma[get_pixel_normal(x)];
     }
   }
 }
