@@ -55,6 +55,12 @@ private:
     unsigned counter0;  //read counters
     unsigned counter1;
 
+    struct mouse_t {
+      bool dx, dy;
+      int x, y;
+      int speed;
+    } mouse;
+
     struct superscope_t {
       int x, y;
 

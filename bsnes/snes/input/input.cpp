@@ -46,19 +46,13 @@ uint8 Input::port_read(bool portnumber) {
     } //case Device::Multitap
 
     case Device::Mouse: {
+      if(cpu.joylatch()) {
+        p.mouse.speed++;
+        if(p.mouse.speed > 2) p.mouse.speed = 0;
+        return 0;
+      }
+
       if(p.counter0 >= 32) return 1;
-
-      int position_x = system.interface->input_poll(portnumber, p.device, 0, (unsigned)MouseID::X);  //-n = left, 0 = center, +n = right
-      int position_y = system.interface->input_poll(portnumber, p.device, 0, (unsigned)MouseID::Y);  //-n = up,   0 = center, +n = right
-
-      bool direction_x = position_x < 0;  //0 = right, 1 = left
-      bool direction_y = position_y < 0;  //0 = down,  1 = up
-
-      if(position_x < 0) position_x = -position_x;  //abs(position_x)
-      if(position_y < 0) position_y = -position_y;  //abs(position_x)
-
-      position_x = min(127, position_x);  //range = 0 - 127
-      position_y = min(127, position_y);  //range = 0 - 127
 
       switch(p.counter0++) { default:
         case  0: return 0;
@@ -72,31 +66,31 @@ uint8 Input::port_read(bool portnumber) {
 
         case  8: return system.interface->input_poll(portnumber, p.device, 0, (unsigned)MouseID::Right);
         case  9: return system.interface->input_poll(portnumber, p.device, 0, (unsigned)MouseID::Left);
-        case 10: return 0;  //speed (0 = slow, 1 = normal, 2 = fast, 3 = unused)
-        case 11: return 0;  // ||
+        case 10: return (p.mouse.speed >> 1) & 1;  //speed (0 = slow, 1 = normal, 2 = fast, 3 = unused)
+        case 11: return (p.mouse.speed >> 0) & 1;  // ||
 
         case 12: return 0;  //signature
         case 13: return 0;  // ||
         case 14: return 0;  // ||
         case 15: return 1;  // ||
 
-        case 16: return (direction_y) & 1;
-        case 17: return (position_y >> 6) & 1;
-        case 18: return (position_y >> 5) & 1;
-        case 19: return (position_y >> 4) & 1;
-        case 20: return (position_y >> 3) & 1;
-        case 21: return (position_y >> 2) & 1;
-        case 22: return (position_y >> 1) & 1;
-        case 23: return (position_y >> 0) & 1;
+        case 16: return p.mouse.dy;
+        case 17: return (p.mouse.y >> 6) & 1;
+        case 18: return (p.mouse.y >> 5) & 1;
+        case 19: return (p.mouse.y >> 4) & 1;
+        case 20: return (p.mouse.y >> 3) & 1;
+        case 21: return (p.mouse.y >> 2) & 1;
+        case 22: return (p.mouse.y >> 1) & 1;
+        case 23: return (p.mouse.y >> 0) & 1;
 
-        case 24: return (direction_x) & 1;
-        case 25: return (position_x >> 6) & 1;
-        case 26: return (position_x >> 5) & 1;
-        case 27: return (position_x >> 4) & 1;
-        case 28: return (position_x >> 3) & 1;
-        case 29: return (position_x >> 2) & 1;
-        case 30: return (position_x >> 1) & 1;
-        case 31: return (position_x >> 0) & 1;
+        case 24: return p.mouse.dx;
+        case 25: return (p.mouse.x >> 6) & 1;
+        case 26: return (p.mouse.x >> 5) & 1;
+        case 27: return (p.mouse.x >> 4) & 1;
+        case 28: return (p.mouse.x >> 3) & 1;
+        case 29: return (p.mouse.x >> 2) & 1;
+        case 30: return (p.mouse.x >> 1) & 1;
+        case 31: return (p.mouse.x >> 0) & 1;
       }
     } //case Device::Mouse
 
@@ -291,7 +285,15 @@ void Input::port_set_device(bool portnumber, Device device) {
   latchx = -1;
   latchy = -1;
 
-  if(device == Device::SuperScope) {
+  if(device == Device::Mouse) {
+    p.mouse.dx = false;
+    p.mouse.dy = false;
+
+    p.mouse.x = 0;
+    p.mouse.y = 0;
+
+    p.mouse.speed = 0;
+  } else if(device == Device::SuperScope) {
     p.superscope.x = 256 / 2;
     p.superscope.y = 240 / 2;
 
@@ -330,10 +332,24 @@ void Input::port_set_device(bool portnumber, Device device) {
 }
 
 void Input::poll() {
-  port[0].counter0 = 0;
-  port[0].counter1 = 0;
-  port[1].counter0 = 0;
-  port[1].counter1 = 0;
+  for(unsigned i = 0; i < 2; i++) {
+    port[i].counter0 = 0;
+    port[i].counter1 = 0;
+
+    if(port[i].device == Device::Mouse) {
+      int x = system.interface->input_poll(i, port[i].device, 0, (unsigned)MouseID::X);  //-n = left, 0 = center, +n = right
+      int y = system.interface->input_poll(i, port[i].device, 0, (unsigned)MouseID::Y);  //-n = up,   0 = center, +n = down
+
+      port[i].mouse.dx = x < 0;
+      port[i].mouse.dy = y < 0;
+
+      if(x < 0) x = -x;
+      if(y < 0) y = -y;
+
+      port[i].mouse.x = min(127, x);
+      port[i].mouse.y = min(127, y);
+    }
+  }
 
   port[1].justifier.active = !port[1].justifier.active;
 }
