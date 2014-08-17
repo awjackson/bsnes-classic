@@ -110,19 +110,20 @@ void PPU::Background::get_tile() {
   if(mirror_y) voffset ^= 7;
   offset = (character << (4 + color_depth)) + ((voffset & 7) << 1);
 
-  if(regs.mode >= Mode::BPP2) {
-    data[0] = memory::vram[offset +  0];
-    data[1] = memory::vram[offset +  1];
-  }
-  if(regs.mode >= Mode::BPP4) {
-    data[2] = memory::vram[offset + 16];
-    data[3] = memory::vram[offset + 17];
-  }
-  if(regs.mode >= Mode::BPP8) {
+  switch(regs.mode) {
+  case Mode::BPP8:
     data[4] = memory::vram[offset + 32];
     data[5] = memory::vram[offset + 33];
     data[6] = memory::vram[offset + 48];
     data[7] = memory::vram[offset + 49];
+    //fall through
+  case Mode::BPP4:
+    data[2] = memory::vram[offset + 16];
+    data[3] = memory::vram[offset + 17];
+    //fall through
+  case Mode::BPP2:
+    data[0] = memory::vram[offset +  0];
+    data[1] = memory::vram[offset +  1];
   }
 
   if(mirror_x) for(unsigned n = 0; n < 8; n++) {
@@ -144,8 +145,6 @@ void PPU::Background::run(bool screen) {
   }
 
   if(regs.mode == Mode::Inactive) return;
-  if(regs.main_enable == false && regs.sub_enable == false) return;
-
   if(regs.mode == Mode::Mode7) return run_mode7();
 
   if(tile_counter-- == 0) {
@@ -193,20 +192,22 @@ void PPU::Background::run(bool screen) {
 
 unsigned PPU::Background::get_tile_color() {
   unsigned color = 0;
-  if(regs.mode >= Mode::BPP2) {
-    color += (data[0] & 0x80) ? 0x01 : 0; data[0] <<= 1;
-    color += (data[1] & 0x80) ? 0x02 : 0; data[1] <<= 1;
-  }
-  if(regs.mode >= Mode::BPP4) {
-    color += (data[2] & 0x80) ? 0x04 : 0; data[2] <<= 1;
-    color += (data[3] & 0x80) ? 0x08 : 0; data[3] <<= 1;
-  }
-  if(regs.mode >= Mode::BPP8) {
+  switch(regs.mode) {
+  case Mode::BPP8:
     color += (data[4] & 0x80) ? 0x10 : 0; data[4] <<= 1;
     color += (data[5] & 0x80) ? 0x20 : 0; data[5] <<= 1;
     color += (data[6] & 0x80) ? 0x40 : 0; data[6] <<= 1;
     color += (data[7] & 0x80) ? 0x80 : 0; data[7] <<= 1;
+    //fall through
+  case Mode::BPP4:
+    color += (data[2] & 0x80) ? 0x04 : 0; data[2] <<= 1;
+    color += (data[3] & 0x80) ? 0x08 : 0; data[3] <<= 1;
+    //fall through
+  case Mode::BPP2:
+    color += (data[0] & 0x80) ? 0x01 : 0; data[0] <<= 1;
+    color += (data[1] & 0x80) ? 0x02 : 0; data[1] <<= 1;
   }
+
   return color;
 }
 

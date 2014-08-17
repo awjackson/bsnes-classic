@@ -38,7 +38,7 @@ void PPU::enter() {
     }
 
     scanline();
-    add_clocks(60);
+    add_clocks(68);
 
     if(vcounter() <= (!regs.overscan ? 224 : 239)) {
       for(signed pixel = -7; pixel <= 255; pixel++) {
@@ -60,13 +60,13 @@ void PPU::enter() {
         add_clocks(2);
       }
 
-      add_clocks(22);
+      add_clocks(14);
       oam.tilefetch();
     } else {
-      add_clocks(1052 + 22 + 136);
+      add_clocks(1052 + 14 + 136);
     }
 
-    add_clocks(lineclocks() - 60 - 1052 - 22 - 136);
+    add_clocks(lineclocks() - 68 - 1052 - 14 - 136);
   }
 }
 
