@@ -72,12 +72,8 @@ void Utility::updateColorFilter() {
 
 void Utility::updatePixelShader() {
   string filedata;
-
-  if(filedata.readfile(config().path.shader)) {
-    video.set(Video::Shader, (const char*)filedata);
-  } else {
-    video.set(Video::Shader, (const char*)0);
-  }
+  filedata.readfile(config().path.shader);
+  video.set(Video::Shader, (const char*)filedata);
 }
 
 void Utility::updateHardwareFilter() {
