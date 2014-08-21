@@ -6,6 +6,12 @@ struct SA1Bus : Bus {
   void init();
 };
 
+struct UnmappedSA1 : Memory {
+  unsigned size() const;
+  alwaysinline uint8 read(unsigned);
+  alwaysinline void write(unsigned, uint8);
+};
+
 struct VSPROM : Memory {
   unsigned size() const;
   alwaysinline uint8 read(unsigned);
@@ -46,6 +52,7 @@ struct BitmapRAM : Memory {
 namespace memory {
   extern StaticRAM iram;
 
+  extern UnmappedSA1 sa1_unmapped;
   extern VSPROM vsprom;
   extern CPUIRAM cpuiram;
   extern SA1IRAM sa1iram;

@@ -12,13 +12,13 @@ void SA1::op_io() {
 uint8 SA1::op_read(unsigned addr) {
   tick();
   if(((addr & 0x40e000) == 0x006000) || ((addr & 0xd00000) == 0x400000)) tick();
-  return sa1bus.read(addr);
+  return regs.mdr = sa1bus.read(addr);
 }
 
 void SA1::op_write(unsigned addr, uint8 data) {
   tick();
   if(((addr & 0x40e000) == 0x006000) || ((addr & 0xd00000) == 0x400000)) tick();
-  sa1bus.write(addr, data);
+  sa1bus.write(addr, regs.mdr = data);
 }
 
 #endif

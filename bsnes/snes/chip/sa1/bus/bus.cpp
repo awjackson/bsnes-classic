@@ -5,6 +5,7 @@ SA1Bus sa1bus;
 
 namespace memory {
   StaticRAM iram(2048);
+  UnmappedSA1 sa1_unmapped;
                         //accessed by:
   VSPROM vsprom;        //S-CPU + SA-1
   CPUIRAM cpuiram;      //S-CPU
@@ -20,7 +21,7 @@ namespace memory {
 //these ports.
 //(* eg, memory::cartram is used directly, as memory::sa1bwram syncs to the S-CPU)
 void VBRBus::init() {
-  map(MapMode::Direct, 0x00, 0xff, 0x0000, 0xffff, memory::memory_unmapped);
+  map(MapMode::Direct, 0x00, 0xff, 0x0000, 0xffff, memory::sa1_unmapped);
 
   map(MapMode::Linear, 0x00, 0x3f, 0x0000, 0x07ff, memory::iram);
   map(MapMode::Linear, 0x00, 0x3f, 0x3000, 0x37ff, memory::iram);
@@ -35,7 +36,7 @@ void VBRBus::init() {
 }
 
 void SA1Bus::init() {
-  map(MapMode::Direct, 0x00, 0xff, 0x0000, 0xffff, memory::memory_unmapped);
+  map(MapMode::Direct, 0x00, 0xff, 0x0000, 0xffff, memory::sa1_unmapped);
 
   map(MapMode::Linear, 0x00, 0x3f, 0x0000, 0x07ff, memory::sa1iram);
   map(MapMode::Direct, 0x00, 0x3f, 0x2200, 0x23ff, memory::mmio);
@@ -51,6 +52,10 @@ void SA1Bus::init() {
   map(MapMode::Linear, 0x80, 0xbf, 0x8000, 0xffff, memory::vsprom);
   map(MapMode::Linear, 0xc0, 0xff, 0x0000, 0xffff, memory::vsprom);
 }
+
+unsigned UnmappedSA1::size() const { return 16 * 1024 * 1024; }
+uint8 UnmappedSA1::read(unsigned) { return sa1.regs.mdr; }
+void UnmappedSA1::write(unsigned, uint8) {}
 
 //======
 //VSPROM
