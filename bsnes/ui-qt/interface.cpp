@@ -71,6 +71,10 @@ int16_t Interface::input_poll(bool port, SNES::Input::Device device, unsigned in
   return mapper().status(port, device, index, id);
 }
 
+void Interface::message(const string &text) {
+  QMessageBox::information(mainWindow, "bsnes", QString::fromUtf8(text));
+}
+
 void Interface::captureScreenshot(uint32_t *data, unsigned pitch, unsigned width, unsigned height) {
   saveScreenshot = false;
   QImage image((const unsigned char*)data, width, height, pitch, QImage::Format_RGB32);
