@@ -174,7 +174,7 @@ bool StateManagerWindow::isStateValid(unsigned slot) {
   if(fp.size() < (slot + 1) * SNES::system.serialize_size()) { fp.close(); return false; }
   fp.seek(slot * SNES::system.serialize_size());
   uint32_t signature = fp.readl(4);
-  if(signature == 0) { fp.close(); return false; }
+  if(signature != SNES::Info::SerializerSignature) { fp.close(); return false; }
   uint32_t version = fp.readl(4);
   if(version != SNES::Info::SerializerVersion) { fp.close(); return false; }
   fp.readl(4);  //skip CRC32

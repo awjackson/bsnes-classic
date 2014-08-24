@@ -3,7 +3,7 @@
 serializer System::serialize() {
   serializer s(serialize_size);
 
-  unsigned signature = 0x31545342, version = Info::SerializerVersion, crc32 = cartridge.crc32();
+  unsigned signature = Info::SerializerSignature, version = Info::SerializerVersion, crc32 = cartridge.crc32();
   char profile[16], description[512];
   memset(&profile, 0, sizeof profile);
   memset(&description, 0, sizeof description);
@@ -29,7 +29,7 @@ bool System::unserialize(serializer &s) {
   s.array(profile);
   s.array(description);
 
-  if(signature != 0x31545342) return false;
+  if(signature != Info::SerializerSignature) return false;
   if(version != Info::SerializerVersion) return false;
 //if(crc32 != cartridge.crc32()) return false;
   if(strcmp(profile, Info::Profile)) return false;
