@@ -26,7 +26,7 @@ bool Cartridge::information(const char *filename, Cartridge::Information &info) 
   char name[22];
   fp.read((uint8_t*)name, 21);
   name[21] = 0;
-  info.name = decodeShiftJIS(name);
+  info.name = decodeJISX0201(name);
 
   fp.seek(header + 0x29);
   uint8_t region = fp.read();
@@ -289,7 +289,7 @@ bool Cartridge::saveMemory(const char *filename, const char *extension, SNES::Ma
   return true;
 }
 
-string Cartridge::decodeShiftJIS(const char *text) {
+string Cartridge::decodeJISX0201(const char *text) {
   unsigned length = strlen(text), offset = 0;
   string output;
 
@@ -326,7 +326,7 @@ string Cartridge::decodeShiftJIS(const char *text) {
         case 0xb0: code = 0xe383bc; break;  //-
         case 0xb1: code = 0xe382a2; break;  //a
         case 0xb2: code = 0xe382a4; break;  //i
-        case 0xb3: code = 0xe382a6; break;  //u 
+        case 0xb3: code = 0xe382a6; dakuten = 0xe383b4; break;  //u,   vu
         case 0xb4: code = 0xe382a8; break;  //e
         case 0xb5: code = 0xe382aa; break;  //o
         case 0xb6: code = 0xe382ab; dakuten = 0xe382ac; break;  //ka,  ga

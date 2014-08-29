@@ -36,7 +36,7 @@ private:
   bool loadCartridge(string&, string&, SNES::MappedRAM&);
   bool loadMemory(const char*, const char*, SNES::MappedRAM&);
   bool saveMemory(const char*, const char*, SNES::MappedRAM&);
-  string decodeShiftJIS(const char*);
+  string decodeJISX0201(const char*);
 };
 
 extern Cartridge cartridge;
