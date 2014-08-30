@@ -269,9 +269,15 @@ void PPU::Screen::serialize(serializer &s) {
   s.integer(regs.oam_color_enable);
   s.integer(regs.back_color_enable);
 
-  s.integer(regs.color_b);
-  s.integer(regs.color_g);
-  s.integer(regs.color_r);
+  s.integer(regs.color);
+
+  s.integer(math.main.color);
+  s.integer(math.main.color_enable);
+  s.integer(math.sub.color);
+  s.integer(math.sub.color_enable);
+  s.integer(math.transparent);
+  s.integer(math.addsub_mode);
+  s.integer(math.color_halve);
 }
 
 #endif

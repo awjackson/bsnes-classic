@@ -532,9 +532,12 @@ void PPU::mmio_w2131(uint8 data) {
 
 //COLDATA
 void PPU::mmio_w2132(uint8 data) {
-  if(data & 0x80) screen.regs.color_b = data & 0x1f;
-  if(data & 0x40) screen.regs.color_g = data & 0x1f;
-  if(data & 0x20) screen.regs.color_r = data & 0x1f;
+  unsigned new_color = data & 0x1f;
+  unsigned old_color = screen.regs.color;
+  unsigned red   = data & 0x20 ? new_color << 0  : old_color & 0x1f;
+  unsigned green = data & 0x40 ? new_color << 5  : old_color & (0x1f << 5);
+  unsigned blue  = data & 0x80 ? new_color << 10 : old_color & (0x1f << 10);
+  screen.regs.color = red | green | blue;
 }
 
 //SETINI

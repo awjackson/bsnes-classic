@@ -3,156 +3,121 @@
 void PPU::Screen::scanline() {
   output = self.output + self.vcounter() * 1024;
   if(self.display.interlace && self.field()) output += 512;
+
+  //the first hires pixel of each scanline is transparent
+  //note: exact value initializations are not confirmed on hardware
+  math.main.color = math.sub.color = get_color(0);
+  math.main.color_enable = !(self.window.regs.col_main_mask & 1);
+  math.sub.color_enable = !(self.window.regs.col_sub_mask & 1) && regs.back_color_enable;
+
+  math.transparent = true;
+  math.addsub_mode = false;
+  math.color_halve = regs.color_halve && !regs.addsub_mode && math.main.color_enable;
 }
 
 void PPU::Screen::run() {
-  uint16 color;
-  if(self.regs.pseudo_hires == false && self.regs.bgmode != 5 && self.regs.bgmode != 6) {
-    color = get_pixel(0);
-    *output++ = color;
-    *output++ = color;
-  } else {
-    color = get_pixel(1);
-    *output++ = color;
-    color = get_pixel(0);
-    *output++ = color;
-  }
+  if(ppu.vcounter() == 0) return;
+
+  bool hires = self.regs.pseudo_hires || self.regs.bgmode == 5 || self.regs.bgmode == 6;
+  uint16 sscolor = get_pixel_sub(hires);
+  uint16 mscolor = get_pixel_main();
+  *output++ = light_table[self.regs.display_brightness][hires ? sscolor : mscolor];
+  *output++ = light_table[self.regs.display_brightness][mscolor];
 }
 
-uint16 PPU::Screen::get_pixel(bool swap) {
-  enum source_t { BG1, BG2, BG3, BG4, OAM, BACK };
-  bool color_enable[] = { regs.bg1_color_enable, regs.bg2_color_enable, regs.bg3_color_enable, regs.bg4_color_enable, regs.oam_color_enable, regs.back_color_enable };
+uint16 PPU::Screen::get_pixel_sub(bool hires) {
+  if(self.regs.display_disable) return 0;
 
-  //===========
-  //main screen
-  //===========
-
-  unsigned priority_main = 0;
-  unsigned color_main;
-  unsigned source_main;
-
-  if(self.bg1.output.main.priority) {
-    priority_main = self.bg1.output.main.priority;
-    if(regs.direct_color && (self.regs.bgmode == 3 || self.regs.bgmode == 4 || self.regs.bgmode == 7)) {
-      color_main = get_direct_color(self.bg1.output.main.palette, self.bg1.output.main.tile);
-    } else {
-      color_main = get_color(self.bg1.output.main.palette);
-    }
-    source_main = BG1;
-  }
-  if(self.bg2.output.main.priority > priority_main) {
-    priority_main = self.bg2.output.main.priority;
-    color_main = get_color(self.bg2.output.main.palette);
-    source_main = BG2;
-  }
-  if(self.bg3.output.main.priority > priority_main) {
-    priority_main = self.bg3.output.main.priority;
-    color_main = get_color(self.bg3.output.main.palette);
-    source_main = BG3;
-  }
-  if(self.bg4.output.main.priority > priority_main) {
-    priority_main = self.bg4.output.main.priority;
-    color_main = get_color(self.bg4.output.main.palette);
-    source_main = BG4;
-  }
-  if(self.oam.output.main.priority > priority_main) {
-    priority_main = self.oam.output.main.priority;
-    color_main = get_color(self.oam.output.main.palette);
-    source_main = OAM;
-  }
-  if(priority_main == 0) {
-    color_main = get_color(0);
-    source_main = BACK;
-  }
-
-  //==========
-  //sub screen
-  //==========
-
-  unsigned priority_sub = 0;
-  unsigned color_sub;
-  unsigned source_sub;
-
+  unsigned priority = 0;
   if(self.bg1.output.sub.priority) {
-    priority_sub = self.bg1.output.sub.priority;
+    priority = self.bg1.output.sub.priority;
     if(regs.direct_color && (self.regs.bgmode == 3 || self.regs.bgmode == 4 || self.regs.bgmode == 7)) {
-      color_sub = get_direct_color(self.bg1.output.sub.palette, self.bg1.output.sub.tile);
+      math.sub.color = get_direct_color(self.bg1.output.sub.palette, self.bg1.output.sub.tile);
     } else {
-      color_sub = get_color(self.bg1.output.sub.palette);
+      math.sub.color = get_color(self.bg1.output.sub.palette);
     }
-    source_sub = BG1;
   }
-  if(self.bg2.output.sub.priority > priority_sub) {
-    priority_sub = self.bg2.output.sub.priority;
-    color_sub = get_color(self.bg2.output.sub.palette);
-    source_sub = BG2;
+  if(self.bg2.output.sub.priority > priority) {
+    priority = self.bg2.output.sub.priority;
+    math.sub.color = get_color(self.bg2.output.sub.palette);
   }
-  if(self.bg3.output.sub.priority > priority_sub) {
-    priority_sub = self.bg3.output.sub.priority;
-    color_sub = get_color(self.bg3.output.sub.palette);
-    source_sub = BG3;
+  if(self.bg3.output.sub.priority > priority) {
+    priority = self.bg3.output.sub.priority;
+    math.sub.color = get_color(self.bg3.output.sub.palette);
   }
-  if(self.bg4.output.sub.priority > priority_sub) {
-    priority_sub = self.bg4.output.sub.priority;
-    color_sub = get_color(self.bg4.output.sub.palette);
-    source_sub = BG4;
+  if(self.bg4.output.sub.priority > priority) {
+    priority = self.bg4.output.sub.priority;
+    math.sub.color = get_color(self.bg4.output.sub.palette);
   }
-  if(self.oam.output.sub.priority > priority_sub) {
-    priority_sub = self.oam.output.sub.priority;
-    color_sub = get_color(self.oam.output.sub.palette);
-    source_sub = OAM;
+  if(self.oam.output.sub.priority > priority) {
+    priority = self.oam.output.sub.priority;
+    math.sub.color = get_color(self.oam.output.sub.palette);
   }
-  if(priority_sub == 0) {
-    if(self.regs.pseudo_hires == true || self.regs.bgmode == 5 || self.regs.bgmode == 6) {
-      color_sub = get_color(0);
-    } else {
-      color_sub = (regs.color_b << 10) + (regs.color_g << 5) + (regs.color_r << 0);
-    }
-    source_sub = BACK;
-  }
+  if(math.transparent = (priority == 0)) math.sub.color = get_color(0);
 
-  if(swap == true) {
-    nall::swap(priority_main, priority_sub);
-    nall::swap(color_main, color_sub);
-    nall::swap(source_main, source_sub);
-  }
-
-  uint16 output;
-  if(!regs.addsub_mode) {
-    source_sub = BACK;
-    color_sub = (regs.color_b << 10) + (regs.color_g << 5) + (regs.color_r << 0);
-  }
-
-  if(self.window.output.main.color_enable == false) {
-    if(self.window.output.sub.color_enable == false) {
-      return 0x0000;
-    }
-    color_main = 0x0000;
-  }
-
-  bool color_exempt = (source_main == OAM && self.oam.output.main.palette < 192);
-  if(!color_exempt && color_enable[source_main] && self.window.output.sub.color_enable) {
-    bool halve = false;
-    if(regs.color_halve && self.window.output.main.color_enable) {
-      if(!regs.addsub_mode || source_sub != BACK) halve = true;
-    }
-    output = addsub(color_main, color_sub, halve);
-  } else {
-    output = color_main;
-  }
-
-  //========
-  //lighting
-  //========
-
-  output = light_table[self.regs.display_brightness][output];
-  if(self.regs.display_disable) output = 0x0000;
-  return output;
+  if(!hires) return 0;
+  if(!math.sub.color_enable) return math.main.color_enable ? math.sub.color : 0;
+  return addsub(math.main.color_enable ? math.sub.color : 0,
+                math.addsub_mode ? math.main.color : regs.color);
 }
 
-uint16 PPU::Screen::addsub(unsigned x, unsigned y, bool halve) {
+uint16 PPU::Screen::get_pixel_main() {
+  if(self.regs.display_disable) return 0;
+
+  unsigned priority = 0;
+  if(self.bg1.output.main.priority) {
+    priority = self.bg1.output.main.priority;
+    if(regs.direct_color && (self.regs.bgmode == 3 || self.regs.bgmode == 4 || self.regs.bgmode == 7)) {
+      math.main.color = get_direct_color(self.bg1.output.main.palette, self.bg1.output.main.tile);
+    } else {
+      math.main.color = get_color(self.bg1.output.main.palette);
+    }
+    math.sub.color_enable = regs.bg1_color_enable;
+  }
+  if(self.bg2.output.main.priority > priority) {
+    priority = self.bg2.output.main.priority;
+    math.main.color = get_color(self.bg2.output.main.palette);
+    math.sub.color_enable = regs.bg2_color_enable;
+  }
+  if(self.bg3.output.main.priority > priority) {
+    priority = self.bg3.output.main.priority;
+    math.main.color = get_color(self.bg3.output.main.palette);
+    math.sub.color_enable = regs.bg3_color_enable;
+  }
+  if(self.bg4.output.main.priority > priority) {
+    priority = self.bg4.output.main.priority;
+    math.main.color = get_color(self.bg4.output.main.palette);
+    math.sub.color_enable = regs.bg4_color_enable;
+  }
+  if(self.oam.output.main.priority > priority) {
+    priority = self.oam.output.main.priority;
+    math.main.color = get_color(self.oam.output.main.palette);
+    math.sub.color_enable = (regs.oam_color_enable && self.oam.output.main.palette >= 192);
+  }
+  if(priority == 0) {
+    math.main.color = get_color(0);
+    math.sub.color_enable = regs.back_color_enable;
+  }
+
+  if(!self.window.output.sub.color_enable) math.sub.color_enable = false;
+  math.main.color_enable = self.window.output.main.color_enable;
+  if(!math.sub.color_enable) return math.main.color_enable ? math.main.color : 0;
+
+  if(regs.addsub_mode && math.transparent) {
+    math.addsub_mode = false;
+    math.color_halve = false;
+  } else {
+    math.addsub_mode = regs.addsub_mode;
+    math.color_halve = regs.color_halve && math.main.color_enable;
+  }
+
+  return addsub(math.main.color_enable ? math.main.color : 0,
+                math.addsub_mode ? math.sub.color : regs.color);
+}
+
+uint16 PPU::Screen::addsub(unsigned x, unsigned y) {
   if(!regs.color_mode) {
-    if(!halve) {
+    if(!math.color_halve) {
       unsigned sum = x + y;
       unsigned carry = (sum - ((x ^ y) & 0x0421)) & 0x8420;
       return (sum - carry) | (carry - (carry >> 5));
@@ -162,7 +127,7 @@ uint16 PPU::Screen::addsub(unsigned x, unsigned y, bool halve) {
   } else {
     unsigned diff = x - y + 0x8420;
     unsigned borrow = (diff - ((x ^ y) & 0x8420)) & 0x8420;
-    if(!halve) {
+    if(!math.color_halve) {
       return   (diff - borrow) & (borrow - (borrow >> 5));
     } else {
       return (((diff - borrow) & (borrow - (borrow >> 5))) & 0x7bde) >> 1;
@@ -196,9 +161,15 @@ void PPU::Screen::reset() {
   regs.bg4_color_enable = 0;
   regs.oam_color_enable = 0;
   regs.back_color_enable = 0;
-  regs.color_r = 0;
-  regs.color_g = 0;
-  regs.color_b = 0;
+  regs.color = 0;
+
+  math.main.color = 0;
+  math.sub.color = 0;
+  math.transparent = false;
+  math.main.color_enable = false;
+  math.sub.color_enable = false;
+  math.addsub_mode = false;
+  math.color_halve = false;
 }
 
 PPU::Screen::Screen(PPU &self) : self(self) {

@@ -14,18 +14,27 @@ class Screen {
     bool oam_color_enable;
     bool back_color_enable;
 
-    uint8 color_b;
-    uint8 color_g;
-    uint8 color_r;
+    uint16 color;
   } regs;
+
+  struct Math {
+    struct Layer {
+      uint16 color;
+      bool color_enable;
+    } main, sub;
+    bool transparent;
+    bool addsub_mode;
+    bool color_halve;
+  } math;
 
   void scanline();
   void run();
   void reset();
 
   uint16 light_table[16][32768];
-  uint16 get_pixel(bool swap);
-  uint16 addsub(unsigned x, unsigned y, bool halve);
+  uint16 get_pixel_sub(bool hires);
+  uint16 get_pixel_main();
+  uint16 addsub(unsigned x, unsigned y);
   uint16 get_color(unsigned palette);
   uint16 get_direct_color(unsigned palette, unsigned tile);
 

@@ -3,7 +3,7 @@ namespace SNES {
     static const char Name[] = "bsnes-classic";
     static const char Version[] = "073";
     static const unsigned SerializerSignature = 0x43545342; //'BSTC'
-    static const unsigned SerializerVersion = 0;
+    static const unsigned SerializerVersion = 1;
   }
 }
 
