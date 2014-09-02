@@ -1,13 +1,12 @@
-#ifndef NALL_SNES_INFO_HPP
-#define NALL_SNES_INFO_HPP
+#ifndef NALL_SNES_CARTRIDGE_HPP
+#define NALL_SNES_CARTRIDGE_HPP
 
 namespace nall {
 
-class snes_information {
+class SNESCartridge {
 public:
-  string xml_memory_map;
-
-  inline snes_information(const uint8_t *data, unsigned size);
+  string xmlMemoryMap;
+  inline SNESCartridge(const uint8_t *data, unsigned size);
 
 //private:
   inline void read_header(const uint8_t *data, unsigned size);
@@ -106,30 +105,30 @@ public:
   bool has_st018;
 };
 
-snes_information::snes_information(const uint8_t *data, unsigned size) {
+SNESCartridge::SNESCartridge(const uint8_t *data, unsigned size) {
   read_header(data, size);
 
   string xml = "<?xml version='1.0' encoding='UTF-8'?>\n";
 
   if(type == TypeBsx) {
     xml << "<cartridge/>";
-    xml_memory_map = xml;
+    xmlMemoryMap = xml;
     return;
   }
 
   if(type == TypeSufamiTurbo) {
     xml << "<cartridge/>";
-    xml_memory_map = xml;
+    xmlMemoryMap = xml;
     return;
   }
 
   if(type == TypeGameBoy) {
     xml << "<cartridge rtc='" << gameboy_has_rtc(data, size) << "'>\n";
     if(gameboy_ram_size(data, size) > 0) {
-      xml << "  <ram size='" << strhex(gameboy_ram_size(data, size)) << "'/>\n";
+      xml << "  <ram size='" << hex(gameboy_ram_size(data, size)) << "'/>\n";
     }
     xml << "</cartridge>\n";
-    xml_memory_map = xml;
+    xmlMemoryMap = xml;
     return;
   }
 
@@ -172,9 +171,9 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
 
     xml << "  <spc7110>\n";
     xml << "    <mcu>\n";
-    xml << "      <map address='d0-ff:0000-ffff' offset='100000' size='" << strhex(size - 0x100000) << "'/>\n";
+    xml << "      <map address='d0-ff:0000-ffff' offset='100000' size='" << hex(size - 0x100000) << "'/>\n";
     xml << "    </mcu>\n";
-    xml << "    <ram size='" << strhex(ram_size) << "'>\n";
+    xml << "    <ram size='" << hex(ram_size) << "'>\n";
     xml << "      <map mode='linear' address='00:6000-7fff'/>\n";
     xml << "      <map mode='linear' address='30:6000-7fff'/>\n";
     xml << "    </ram>\n";
@@ -199,7 +198,7 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "  </rom>\n";
 
     if(ram_size > 0) {
-      xml << "  <ram size='" << strhex(ram_size) << "'>\n";
+      xml << "  <ram size='" << hex(ram_size) << "'>\n";
       xml << "    <map mode='linear' address='20-3f:6000-7fff'/>\n";
       xml << "    <map mode='linear' address='a0-bf:6000-7fff'/>\n";
       if((rom_size > 0x200000) || (ram_size > 32 * 1024)) {
@@ -220,7 +219,7 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "  </rom>\n";
 
     if(ram_size > 0) {
-      xml << "  <ram size='" << strhex(ram_size) << "'>\n";
+      xml << "  <ram size='" << hex(ram_size) << "'>\n";
       xml << "    <map mode='linear' address='20-3f:6000-7fff'/>\n";
       xml << "    <map mode='linear' address='a0-bf:6000-7fff'/>\n";
       if((rom_size > 0x200000) || (ram_size > 32 * 1024)) {
@@ -238,7 +237,7 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "  </rom>\n";
 
     if(ram_size > 0) {
-      xml << "  <ram size='" << strhex(ram_size) << "'>\n";
+      xml << "  <ram size='" << hex(ram_size) << "'>\n";
       xml << "    <map mode='linear' address='20-3f:6000-7fff'/>\n";
       xml << "    <map mode='linear' address='a0-bf:6000-7fff'/>\n";
       xml << "    <map mode='linear' address='70-7f:0000-7fff'/>\n";
@@ -253,7 +252,7 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "  </rom>\n";
 
     if(ram_size > 0) {
-      xml << "  <ram size='" << strhex(ram_size) << "'>\n";
+      xml << "  <ram size='" << hex(ram_size) << "'>\n";
       xml << "    <map mode='linear' address='20-3f:6000-7fff'/>\n";
       xml << "    <map mode='linear' address='a0-bf:6000-7fff'/>\n";
       if((rom_size > 0x200000) || (ram_size > 32 * 1024)) {
@@ -271,7 +270,7 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "      <map mode='linear' address='80-bf:8000-ffff'/>\n";
     xml << "      <map mode='linear' address='c0-df:0000-ffff'/>\n";
     xml << "    </rom>\n";
-    xml << "    <ram size='" << strhex(ram_size) << "'>\n";
+    xml << "    <ram size='" << hex(ram_size) << "'>\n";
     xml << "      <map mode='linear' address='00-3f:6000-7fff' size='2000'/>\n";
     xml << "      <map mode='linear' address='60-7f:0000-ffff'/>\n";
     xml << "      <map mode='linear' address='80-bf:6000-7fff' size='2000'/>\n";
@@ -293,7 +292,7 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "      <map mode='linear' address='00-3f:3000-37ff'/>\n";
     xml << "      <map mode='linear' address='80-bf:3000-37ff'/>\n";
     xml << "    </iram>\n";
-    xml << "    <bwram size='" << strhex(ram_size) << "'>\n";
+    xml << "    <bwram size='" << hex(ram_size) << "'>\n";
     xml << "      <map mode='linear' address='00-3f:6000-7fff'/>\n";
     xml << "      <map mode='linear' address='40-4f:0000-ffff'/>\n";
     xml << "      <map mode='linear' address='80-bf:6000-7fff'/>\n";
@@ -310,7 +309,7 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "    <map mode='linear' address='80-9f:8000-ffff' offset='200000'/>\n";
     xml << "    <map mode='linear' address='a0-bf:8000-ffff' offset='100000'/>\n";
     xml << "  </rom>\n";
-    xml << "  <ram size='" << strhex(ram_size) << "'>\n";
+    xml << "  <ram size='" << hex(ram_size) << "'>\n";
     xml << "    <map mode='linear' address='70-7f:0000-7fff'/>\n";
     xml << "    <map mode='linear' address='f0-ff:0000-7fff'/>\n";
     xml << "  </ram>\n";
@@ -326,7 +325,7 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "    <map mode='shadow' address='80-9f:8000-ffff'/>\n";
     xml << "    <map mode='linear' address='c0-df:0000-ffff'/>\n";
     xml << "  </rom>\n";
-    xml << "  <ram size='" << strhex(ram_size) << "'>\n";
+    xml << "  <ram size='" << hex(ram_size) << "'>\n";
     xml << "    <map mode='linear' address='20-3f:6000-7fff'/>\n";
     xml << "    <map mode='linear' address='a0-bf:6000-7fff'/>\n";
     xml << "  </ram>\n";
@@ -409,7 +408,7 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
   }
 
   if(has_dsp1) {
-    xml << "  <necdsp program='DSP-1B'>\n";
+    xml << "  <upd77c25 program='dsp1b.bin' sha256='4d42db0f36faef263d6b93f508e8c1c4ae8fc2605fd35e3390ecc02905cd420c'>\n";
     if(dsp1_mapper == DSP1LoROM1MB) {
       xml << "    <dr>\n";
       xml << "      <map address='20-3f:8000-bfff'/>\n";
@@ -438,11 +437,11 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
       xml << "      <map address='80-9f:7000-7fff'/>\n";
       xml << "    </sr>\n";
     }
-    xml << "  </necdsp>\n";
+    xml << "  </upd77c25>\n";
   }
 
   if(has_dsp2) {
-    xml << "  <necdsp program='DSP-2'>\n";
+    xml << "  <upd77c25 program='dsp2.bin' sha256='5efbdf96ed0652790855225964f3e90e6a4d466cfa64df25b110933c6cf94ea1'>\n";
     xml << "    <dr>\n";
     xml << "      <map address='20-3f:8000-bfff'/>\n";
     xml << "      <map address='a0-bf:8000-bfff'/>\n";
@@ -451,11 +450,11 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "      <map address='20-3f:c000-ffff'/>\n";
     xml << "      <map address='a0-bf:c000-ffff'/>\n";
     xml << "    </sr>\n";
-    xml << "  </necdsp>\n";
+    xml << "  </upd77c25>\n";
   }
 
   if(has_dsp3) {
-    xml << "  <necdsp program='DSP-3'>\n";
+    xml << "  <upd77c25 program='dsp3.bin' sha256='2e635f72e4d4681148bc35429421c9b946e4f407590e74e31b93b8987b63ba90'>\n";
     xml << "    <dr>\n";
     xml << "      <map address='20-3f:8000-bfff'/>\n";
     xml << "      <map address='a0-bf:8000-bfff'/>\n";
@@ -464,11 +463,11 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "      <map address='20-3f:c000-ffff'/>\n";
     xml << "      <map address='a0-bf:c000-ffff'/>\n";
     xml << "    </sr>\n";
-    xml << "  </necdsp>\n";
+    xml << "  </upd77c25>\n";
   }
 
   if(has_dsp4) {
-    xml << "  <necdsp program='DSP-4'>\n";
+    xml << "  <upd77c25 program='dsp4.bin' sha256='63ede17322541c191ed1fdf683872554a0a57306496afc43c59de7c01a6e764a'>\n";
     xml << "    <dr>\n";
     xml << "      <map address='30-3f:8000-bfff'/>\n";
     xml << "      <map address='b0-bf:8000-bfff'/>\n";
@@ -477,7 +476,7 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
     xml << "      <map address='30-3f:c000-ffff'/>\n";
     xml << "      <map address='b0-bf:c000-ffff'/>\n";
     xml << "    </sr>\n";
-    xml << "  </necdsp>\n";
+    xml << "  </upd77c25>\n";
   }
 
   if(has_obc1) {
@@ -518,10 +517,10 @@ snes_information::snes_information(const uint8_t *data, unsigned size) {
   }
 
   xml << "</cartridge>\n";
-  xml_memory_map = xml;
+  xmlMemoryMap = xml;
 }
 
-void snes_information::read_header(const uint8_t *data, unsigned size) {
+void SNESCartridge::read_header(const uint8_t *data, unsigned size) {
   type        = TypeUnknown;
   mapper      = LoROM;
   dsp1_mapper = DSP1Unmapped;
@@ -556,6 +555,11 @@ void snes_information::read_header(const uint8_t *data, unsigned size) {
       type = TypeGameBoy;
       return;
     }
+  }
+
+  if(size < 32768) {
+    type = TypeUnknown;
+    return;
   }
 
   const unsigned index = find_header(data, size);
@@ -744,7 +748,7 @@ void snes_information::read_header(const uint8_t *data, unsigned size) {
   }
 }
 
-unsigned snes_information::find_header(const uint8_t *data, unsigned size) {
+unsigned SNESCartridge::find_header(const uint8_t *data, unsigned size) {
   unsigned score_lo = score_header(data, size, 0x007fc0);
   unsigned score_hi = score_header(data, size, 0x00ffc0);
   unsigned score_ex = score_header(data, size, 0x40ffc0);
@@ -759,7 +763,7 @@ unsigned snes_information::find_header(const uint8_t *data, unsigned size) {
   }
 }
 
-unsigned snes_information::score_header(const uint8_t *data, unsigned size, unsigned addr) {
+unsigned SNESCartridge::score_header(const uint8_t *data, unsigned size, unsigned addr) {
   if(size < addr + 64) return 0;  //image too small to contain header at this location?
   int score = 0;
 
@@ -840,7 +844,7 @@ unsigned snes_information::score_header(const uint8_t *data, unsigned size, unsi
   return score;
 }
 
-unsigned snes_information::gameboy_ram_size(const uint8_t *data, unsigned size) {
+unsigned SNESCartridge::gameboy_ram_size(const uint8_t *data, unsigned size) {
   if(size < 512) return 0;
   switch(data[0x0149]) {
     case 0x00: return   0 * 1024;
@@ -853,7 +857,7 @@ unsigned snes_information::gameboy_ram_size(const uint8_t *data, unsigned size) 
   }
 }
 
-bool snes_information::gameboy_has_rtc(const uint8_t *data, unsigned size) {
+bool SNESCartridge::gameboy_has_rtc(const uint8_t *data, unsigned size) {
   if(size < 512) return false;
   if(data[0x0147] == 0x0f ||data[0x0147] == 0x10) return true;
   return false;

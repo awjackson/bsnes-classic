@@ -34,7 +34,7 @@ ifeq ($(compiler),)
   else ifeq ($(platform),osx)
     compiler := gcc-mp-4.5
   else
-    compiler := gcc-4.5
+    compiler := gcc
   endif
 endif
 

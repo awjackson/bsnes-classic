@@ -2,6 +2,7 @@
 #define NALL_ARRAY_HPP
 
 #include <stdlib.h>
+#include <string.h>
 #include <initializer_list>
 #include <type_traits>
 #include <utility>
