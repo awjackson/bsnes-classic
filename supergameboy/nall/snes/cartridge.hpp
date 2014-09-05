@@ -846,6 +846,7 @@ unsigned SNESCartridge::score_header(const uint8_t *data, unsigned size, unsigne
 
 unsigned SNESCartridge::gameboy_ram_size(const uint8_t *data, unsigned size) {
   if(size < 512) return 0;
+  if(data[0x0147] == 0x06) return 512; //MBC2 has 512 nibbles of internal RAM
   switch(data[0x0149]) {
     case 0x00: return   0 * 1024;
     case 0x01: return   8 * 1024;
