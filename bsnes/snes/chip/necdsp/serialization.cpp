@@ -1,12 +1,14 @@
-#ifdef UPD77C25_CPP
+#ifdef NECDSP_CPP
 
-void UPD77C25::serialize(serializer &s) {
+void NECDSP::serialize(serializer &s) {
   s.array(dataRAM);
 
+  s.array(regs.stack);
   s.integer(regs.pc);
-  for(unsigned n = 0; n < 4; n++) s.integer(regs.stack[n]);
   s.integer(regs.rp);
   s.integer(regs.dp);
+  s.integer(regs.sp);
+
   s.integer(regs.k);
   s.integer(regs.l);
   s.integer(regs.m);
@@ -44,9 +46,8 @@ void UPD77C25::serialize(serializer &s) {
   s.integer(regs.sr.p0);
 
   s.integer(regs.dr);
-  s.integer(regs.siack);
-  s.integer(regs.soack);
-  s.integer(regs.idb);
+  s.integer(regs.si);
+  s.integer(regs.so);
 }
 
 #endif

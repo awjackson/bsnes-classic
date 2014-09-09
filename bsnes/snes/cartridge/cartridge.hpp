@@ -37,15 +37,13 @@ public:
   readonly<bool> has_bsx_slot;
   readonly<bool> has_superfx;
   readonly<bool> has_sa1;
-  readonly<bool> has_upd77c25;
+  readonly<bool> has_necdsp;
   readonly<bool> has_srtc;
   readonly<bool> has_sdd1;
   readonly<bool> has_spc7110;
   readonly<bool> has_spc7110rtc;
   readonly<bool> has_cx4;
   readonly<bool> has_obc1;
-  readonly<bool> has_st0010;
-  readonly<bool> has_st0011;
   readonly<bool> has_st0018;
   readonly<bool> has_msu1;
   readonly<bool> has_serial;
@@ -85,7 +83,7 @@ private:
   void xml_parse_ram(xml_element&);
   void xml_parse_superfx(xml_element&);
   void xml_parse_sa1(xml_element&);
-  void xml_parse_upd77c25(xml_element&);
+  void xml_parse_necdsp(xml_element&);
   void xml_parse_bsx(xml_element&);
   void xml_parse_sufamiturbo(xml_element&);
   void xml_parse_supergameboy(xml_element&);
@@ -93,9 +91,7 @@ private:
   void xml_parse_sdd1(xml_element&);
   void xml_parse_spc7110(xml_element&);
   void xml_parse_cx4(xml_element&);
-  void xml_parse_necdsp(xml_element&);
   void xml_parse_obc1(xml_element&);
-  void xml_parse_setadsp(xml_element&);
   void xml_parse_setarisc(xml_element&);
   void xml_parse_msu1(xml_element&);
   void xml_parse_serial(xml_element&);

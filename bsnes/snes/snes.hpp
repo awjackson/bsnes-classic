@@ -3,7 +3,7 @@ namespace SNES {
     static const char Name[] = "bsnes-classic";
     static const char Version[] = "073";
     static const unsigned SerializerSignature = 0x43545342; //'BSTC'
-    static const unsigned SerializerVersion = 1;
+    static const unsigned SerializerVersion = 2;
   }
 }
 
@@ -82,9 +82,7 @@ namespace SNES {
   typedef uint_t<30> uint30;
   typedef uint_t<31> uint31;
 
-  typedef uint_t<40> uint40;
-  typedef uint_t<48> uint48;
-  typedef uint_t<56> uint56;
+  typedef varuint_t varuint;
 
   struct Processor {
     cothread_t thread;

@@ -18,9 +18,7 @@ void Utility::modifySystemState(system_state_t systemState) {
 
       //warn if unsupported hardware detected
       string chip;
-      if(0);
-      else if(SNES::cartridge.has_st0011()) chip = "ST-0011";
-      else if(SNES::cartridge.has_st0018()) chip = "ST-0018";
+      if(SNES::cartridge.has_st0018()) chip = "ST-0018";
       if(chip != "") {
         QMessageBox::warning(mainWindow, "Warning", string()
         << "<p><b>Warning:</b><br> The " << chip << " chip was detected, which is not fully emulated yet.<br>"

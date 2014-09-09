@@ -31,21 +31,19 @@ void Cartridge::load(Mode cartridge_mode, const lstring &xml_list) {
   has_bsx_slot   = false;
   has_superfx    = false;
   has_sa1        = false;
-  has_upd77c25   = false;
+  has_necdsp     = false;
   has_srtc       = false;
   has_sdd1       = false;
   has_spc7110    = false;
   has_spc7110rtc = false;
   has_cx4        = false;
   has_obc1       = false;
-  has_st0010     = false;
-  has_st0011     = false;
   has_st0018     = false;
   has_msu1       = false;
   has_serial     = false;
 
   parse_xml(xml_list);
-//print(xml_list[0], "\n");
+//print(xml_list[0], "\n\n");
 
   if(ram_size > 0) {
     memory::cartram.map(allocate<uint8_t>(ram_size, 0xff), ram_size);
