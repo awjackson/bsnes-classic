@@ -305,7 +305,7 @@ void Cartridge::xml_parse_necdsp(xml_element &root) {
     }
   }
 
-  if(program == "") {
+  if(programhash == "") {
     system.interface->message({ "Warning: NEC DSP program ", program, " is missing." });
   } else if(sha256 != "" && sha256 != programhash) {
     system.interface->message({
