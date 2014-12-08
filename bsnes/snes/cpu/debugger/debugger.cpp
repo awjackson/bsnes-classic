@@ -29,10 +29,10 @@ uint8 CPUDebugger::op_read(uint32 addr) {
 }
 
 void CPUDebugger::op_write(uint32 addr, uint8 data) {
+  debugger.breakpoint_test(Debugger::Breakpoint::Source::CPUBus, Debugger::Breakpoint::Mode::Write, addr, data);
   CPU::op_write(addr, data);
   usage[addr] |= UsageWrite;
   usage[addr] &= ~UsageExec;
-  debugger.breakpoint_test(Debugger::Breakpoint::Source::CPUBus, Debugger::Breakpoint::Mode::Write, addr, data);
 }
 
 CPUDebugger::CPUDebugger() {
