@@ -94,6 +94,6 @@ clean: ui_clean
 	-@$(call delete,*.manifest)
 
 archive-all:
-	tar -cjf bsnes.tar.bz2 data launcher libco nall obj out phoenix ruby snes ui-phoenix ui-qt Makefile cc.bat clean.bat sync.sh
+	tar -cjf bsnes.tar.bz2 data launcher libco nall obj out ruby snes ui-qt Makefile cc.bat clean.bat sync.sh
 
 help:;

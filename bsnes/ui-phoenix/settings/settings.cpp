@@ -1,5 +1,0 @@
-#include "../base.hpp"
-#include "video.cpp"
-#include "audio.cpp"
-#include "input.cpp"
-#include "advanced.cpp"
