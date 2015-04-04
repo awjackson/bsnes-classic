@@ -5,20 +5,15 @@ Debugger debugger;
 void Debugger::breakpoint_test(Debugger::Breakpoint::Source source, Debugger::Breakpoint::Mode mode, unsigned addr, uint8 data) {
   for(unsigned i = 0; i < Breakpoints; i++) {
     if(breakpoint[i].enabled == false) continue;
+    if(breakpoint[i].source != source) continue;
+    if(breakpoint[i].mode != mode) continue;
+    if(breakpoint[i].data != -1 && breakpoint[i].data != data) continue;
 
-    bool source_wram = ((breakpoint[i].addr & 0x40e000) == 0x000000) || ((breakpoint[i].addr & 0xffe000) == 0x7e0000);
-    bool offset_wram = ((addr & 0x40e000) == 0x000000) || ((addr & 0xffe000) == 0x7e0000);
-
-    if(source == Debugger::Breakpoint::Source::CPUBus && source_wram && offset_wram) {
-      //shadow S-CPU WRAM addresses ($00-3f|80-bf:0000-1fff mirrors $7e:0000-1fff)
-      if((breakpoint[i].addr & 0x1fff) != (addr & 0x1fff)) continue;
+    if(source == Debugger::Breakpoint::Source::CPUBus) {
+      if(bus.is_mirror(breakpoint[i].addr, addr) == false) continue;
     } else {
       if(breakpoint[i].addr != addr) continue;
     }
-
-    if(breakpoint[i].data != -1 && breakpoint[i].data != data) continue;
-    if(breakpoint[i].source != source) continue;
-    if(breakpoint[i].mode != mode) continue;
 
     breakpoint[i].counter++;
     breakpoint_hit = i;

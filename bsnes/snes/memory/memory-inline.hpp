@@ -59,10 +59,18 @@ uint8 Bus::read(uint24 addr) {
   }
   #endif
   Page &p = page[addr >> 8];
-  return p.access->read(p.offset + addr);
+  return p.access->read(addr - p.offset);
 }
 
 void Bus::write(uint24 addr, uint8 data) {
   Page &p = page[addr >> 8];
-  p.access->write(p.offset + addr, data);
+  p.access->write(addr - p.offset, data);
+}
+
+bool Bus::is_mirror(uint24 addr1, uint24 addr2) {
+  if((addr1 ^ addr2) & 0xff) return false;
+
+  Page &p1 = page[addr1 >> 8];
+  Page &p2 = page[addr2 >> 8];
+  return (p1.access == p2.access) && (addr1 - p1.offset == addr2 - p2.offset);
 }

@@ -67,7 +67,7 @@ unsigned Bus::mirror(unsigned addr, unsigned size) {
 void Bus::map(unsigned addr, Memory &access, unsigned offset) {
   Page &p = page[addr >> 8];
   p.access = &access;
-  p.offset = offset - addr;
+  p.offset = addr - offset;
 }
 
 void Bus::map(

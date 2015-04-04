@@ -80,16 +80,13 @@ struct Bus {
   alwaysinline uint8 read(uint24 addr);
   alwaysinline void write(uint24 addr, uint8 data);
 
+  alwaysinline bool is_mirror(uint24 addr1, uint24 addr2);
+
   bool load_cart();
   void unload_cart();
 
   void power();
   void reset();
-
-  struct Page {
-    Memory *access;
-    unsigned offset;
-  } page[65536];
 
   void serialize(serializer&);
 
@@ -97,6 +94,11 @@ private:
   void map_reset();
   void map_xml();
   void map_system();
+
+  struct Page {
+    Memory *access;
+    unsigned offset;
+  } page[65536];
 };
 
 namespace memory {
