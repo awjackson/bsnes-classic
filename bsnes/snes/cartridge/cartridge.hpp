@@ -13,6 +13,11 @@ public:
     PAL,
   };
 
+  enum class BSXPackType : unsigned {
+    FlashROM,
+    MaskROM,
+  };
+
   enum class SuperGameBoyVersion : unsigned {
     Version1,
     Version2,
@@ -32,6 +37,7 @@ public:
   readonly<unsigned> spc7110_data_rom_offset;
   readonly<unsigned> st_A_ram_size;
   readonly<unsigned> st_B_ram_size;
+  readonly<BSXPackType> bsxpack_type;
   readonly<SuperGameBoyVersion> supergameboy_version;
   readonly<unsigned> supergameboy_ram_size;
   readonly<unsigned> supergameboy_rtc_size;
@@ -70,6 +76,8 @@ public:
   void load(Mode, const lstring&);
   void unload();
 
+  Memory& bsxpack_access();
+
   void serialize(serializer&);
   Cartridge();
   ~Cartridge();
@@ -105,7 +113,7 @@ private:
 
 namespace memory {
   extern MappedRAM cartrom, cartram, cartrtc;
-  extern MappedRAM bsxflash, bsxram, bsxpram;
+  extern MappedRAM bsxpack, bsxram, bsxpram;
   extern MappedRAM stArom, stAram;
   extern MappedRAM stBrom, stBram;
   extern MappedRAM gbrom, gbram, gbrtc;
