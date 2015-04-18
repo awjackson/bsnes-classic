@@ -11,7 +11,7 @@ namespace SNES {
 
 namespace memory {
   MappedRAM cartrom, cartram, cartrtc;
-  MappedRAM bsxpack, bsxram, bsxpram;
+  MappedRAM bsxpack, bsxpram;
   MappedRAM stArom, stAram;
   MappedRAM stBrom, stBram;
   MappedRAM gbrom, gbram, gbrtc;
@@ -57,7 +57,6 @@ void Cartridge::load(Mode cartridge_mode, const lstring &xml_list) {
   }
 
   if(mode == Mode::Bsx) {
-    memory::bsxram.map (allocate<uint8_t>( 32 * 1024, 0xff),  32 * 1024);
     memory::bsxpram.map(allocate<uint8_t>(512 * 1024, 0xff), 512 * 1024);
   }
 
@@ -77,7 +76,6 @@ void Cartridge::load(Mode cartridge_mode, const lstring &xml_list) {
   memory::cartram.write_protect(false);
   memory::cartrtc.write_protect(false);
   memory::bsxpack.write_protect(true);
-  memory::bsxram.write_protect(false);
   memory::bsxpram.write_protect(false);
   memory::stArom.write_protect(true);
   memory::stAram.write_protect(false);
@@ -115,7 +113,6 @@ void Cartridge::unload() {
   memory::cartram.reset();
   memory::cartrtc.reset();
   memory::bsxpack.reset();
-  memory::bsxram.reset();
   memory::bsxpram.reset();
   memory::stArom.reset();
   memory::stAram.reset();
