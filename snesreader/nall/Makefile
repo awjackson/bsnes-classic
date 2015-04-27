@@ -16,11 +16,7 @@
 
 ifeq ($(platform),)
   uname := $(shell uname -a)
-  ifeq ($(uname),)
-    platform := win
-  else ifneq ($(findstring Windows,$(uname)),)
-    platform := win
-  else ifneq ($(findstring CYGWIN,$(uname)),)
+  ifdef SystemRoot
     platform := win
   else ifneq ($(findstring Darwin,$(uname)),)
     platform := osx
