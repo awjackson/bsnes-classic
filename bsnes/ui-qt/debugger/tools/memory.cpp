@@ -119,7 +119,7 @@ void MemoryEditor::updateOffset() {
 void MemoryEditor::exportMemory() {
   string basename = filepath(nall::basename(cartridge.fileName), config().path.data);
 
-  if(SNES::memory::cartram.size() != 0 && SNES::memory::cartram.size() != ~0) {
+  if(SNES::memory::cartram.size() != 0) {
     exportMemory(SNES::memory::cartram, string() << basename << "-sram.bin");
   }
   exportMemory(SNES::memory::wram, string() << basename << "-wram.bin");
@@ -132,7 +132,7 @@ void MemoryEditor::exportMemory() {
 void MemoryEditor::importMemory() {
   string basename = filepath(nall::basename(cartridge.fileName), config().path.data);
 
-  if(SNES::memory::cartram.size() != 0 && SNES::memory::cartram.size() != ~0) {
+  if(SNES::memory::cartram.size() != 0) {
     importMemory(SNES::memory::cartram, string() << basename << "-sram.bin");
   }
   importMemory(SNES::memory::wram, string() << basename << "-wram.bin");

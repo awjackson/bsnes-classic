@@ -302,7 +302,7 @@ bool Cartridge::loadCartridge(string &filename, string &xml, SNES::MappedRAM &me
 }
 
 bool Cartridge::loadMemory(const char *filename, const char *extension, SNES::MappedRAM &memory) {
-  if(memory.size() == 0 || memory.size() == -1U) return false;
+  if(memory.size() == 0) return false;
 
   string name;
   name << filepath(nall::basename(filename), config().path.save);
@@ -322,7 +322,7 @@ bool Cartridge::loadMemory(const char *filename, const char *extension, SNES::Ma
 }
 
 bool Cartridge::saveMemory(const char *filename, const char *extension, SNES::MappedRAM &memory) {
-  if(memory.size() == 0 || memory.size() == -1U) return false;
+  if(memory.size() == 0) return false;
 
   string name;
   name << filepath(nall::basename(filename), config().path.save);
