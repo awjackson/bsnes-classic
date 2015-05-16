@@ -25,17 +25,21 @@ unsigned SuperFXGSUROM::size() const {
 }
 
 uint8 SuperFXGSUROM::read(unsigned addr) {
-  while(!superfx.regs.scmr.ron && scheduler.sync != Scheduler::SynchronizeMode::All) {
-    superfx.add_clocks(6);
-    superfx.synchronize_cpu();
+  if(!debugger_access()) {
+    while(!superfx.regs.scmr.ron && scheduler.sync != Scheduler::SynchronizeMode::All) {
+      superfx.add_clocks(6);
+      superfx.synchronize_cpu();
+    }
   }
   return memory::cartrom.read(addr);
 }
 
 void SuperFXGSUROM::write(unsigned addr, uint8 data) {
-  while(!superfx.regs.scmr.ron && scheduler.sync != Scheduler::SynchronizeMode::All) {
-    superfx.add_clocks(6);
-    superfx.synchronize_cpu();
+  if(!debugger_access()) {
+    while(!superfx.regs.scmr.ron && scheduler.sync != Scheduler::SynchronizeMode::All) {
+      superfx.add_clocks(6);
+      superfx.synchronize_cpu();
+    }
   }
   memory::cartrom.write(addr, data);
 }
@@ -45,17 +49,21 @@ unsigned SuperFXGSURAM::size() const {
 }
 
 uint8 SuperFXGSURAM::read(unsigned addr) {
-  while(!superfx.regs.scmr.ran && scheduler.sync != Scheduler::SynchronizeMode::All) {
-    superfx.add_clocks(6);
-    superfx.synchronize_cpu();
+  if(!debugger_access()) {
+    while(!superfx.regs.scmr.ran && scheduler.sync != Scheduler::SynchronizeMode::All) {
+      superfx.add_clocks(6);
+      superfx.synchronize_cpu();
+    }
   }
   return memory::cartram.read(addr);
 }
 
 void SuperFXGSURAM::write(unsigned addr, uint8 data) {
-  while(!superfx.regs.scmr.ran && scheduler.sync != Scheduler::SynchronizeMode::All) {
-    superfx.add_clocks(6);
-    superfx.synchronize_cpu();
+  if(!debugger_access()) {
+    while(!superfx.regs.scmr.ran && scheduler.sync != Scheduler::SynchronizeMode::All) {
+      superfx.add_clocks(6);
+      superfx.synchronize_cpu();
+    }
   }
   memory::cartram.write(addr, data);
 }
@@ -67,7 +75,7 @@ unsigned SuperFXCPUROM::size() const {
 }
 
 uint8 SuperFXCPUROM::read(unsigned addr) {
-  if(superfx.regs.sfr.g && superfx.regs.scmr.ron) {
+  if(superfx.regs.sfr.g && superfx.regs.scmr.ron && !debugger_access()) {
     static const uint8_t data[16] = {
       0x00, 0x01, 0x00, 0x01, 0x04, 0x01, 0x00, 0x01,
       0x00, 0x01, 0x08, 0x01, 0x00, 0x01, 0x0c, 0x01,
@@ -86,7 +94,7 @@ unsigned SuperFXCPURAM::size() const {
 }
 
 uint8 SuperFXCPURAM::read(unsigned addr) {
-  if(superfx.regs.sfr.g && superfx.regs.scmr.ran) return cpu.regs.mdr;
+  if(superfx.regs.sfr.g && superfx.regs.scmr.ran && !debugger_access()) return cpu.regs.mdr;
   return memory::cartram.read(addr);
 }
 

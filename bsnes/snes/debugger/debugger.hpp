@@ -21,6 +21,7 @@ public:
 
   bool step_cpu;
   bool step_smp;
+  bool bus_access;
 
   enum class MemorySource : unsigned { CPUBus, APUBus, APURAM, VRAM, OAM, CGRAM };
   uint8 read(MemorySource, unsigned addr);
