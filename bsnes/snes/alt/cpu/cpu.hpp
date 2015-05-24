@@ -116,7 +116,7 @@ private:
     bool nmi_enabled;
     bool virq_enabled;
     bool hirq_enabled;
-    bool auto_joypad_poll_enabled;
+    bool auto_joypad_poll;
 
     uint8 pio;
 
@@ -125,8 +125,8 @@ private:
     uint16 wrdiva;
     uint8 wrdivb;
 
-    uint16 htime;
-    uint16 vtime;
+    uint16 hirq_pos;
+    uint16 virq_pos;
 
     unsigned rom_speed;
 
@@ -143,7 +143,7 @@ private:
 };
 
 #if defined(DEBUGGER)
-  #include "debugger/debugger.hpp"
+  #include "../../cpu/debugger/debugger.hpp"
   extern CPUDebugger cpu;
 #else
   extern CPU cpu;
