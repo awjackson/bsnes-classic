@@ -1,5 +1,13 @@
 #ifdef CPU_CPP
 
+uint8 CPUDebugger::disassembler_read(uint32 addr)
+{
+  debugger.bus_access = true;
+  uint8 data = bus.read(addr);
+  debugger.bus_access = false;
+  return data;
+}
+
 void CPUDebugger::op_step() {
   bool break_event = false;
 
