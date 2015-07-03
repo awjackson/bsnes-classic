@@ -15,10 +15,6 @@ public:
   void power();
   void reset();
   void serialize(serializer&);
-
-private:
-  unsigned clockmode;
-  unsigned instruction_counter;
 };
 
 extern SuperFX superfx;

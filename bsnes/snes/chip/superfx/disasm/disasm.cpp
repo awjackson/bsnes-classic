@@ -48,8 +48,8 @@ void SuperFX::disassemble_alt0(char *output) {
     case  (0x03): sprintf(t, "lsr"); break;
     case  (0x04): sprintf(t, "rol"); break;
     case  (0x05): sprintf(t, "bra %+d", (int8_t)op1); break;
-    case  (0x06): sprintf(t, "blt %+d", (int8_t)op1); break;
-    case  (0x07): sprintf(t, "bge %+d", (int8_t)op1); break;
+    case  (0x06): sprintf(t, "bge %+d", (int8_t)op1); break;
+    case  (0x07): sprintf(t, "blt %+d", (int8_t)op1); break;
     case  (0x08): sprintf(t, "bne %+d", (int8_t)op1); break;
     case  (0x09): sprintf(t, "beq %+d", (int8_t)op1); break;
     case  (0x0a): sprintf(t, "bpl %+d", (int8_t)op1); break;
@@ -105,8 +105,8 @@ void SuperFX::disassemble_alt1(char *output) {
     case  (0x03): sprintf(t, "lsr"); break;
     case  (0x04): sprintf(t, "rol"); break;
     case  (0x05): sprintf(t, "bra %+d", (int8_t)op1); break;
-    case  (0x06): sprintf(t, "blt %+d", (int8_t)op1); break;
-    case  (0x07): sprintf(t, "bge %+d", (int8_t)op1); break;
+    case  (0x06): sprintf(t, "bge %+d", (int8_t)op1); break;
+    case  (0x07): sprintf(t, "blt %+d", (int8_t)op1); break;
     case  (0x08): sprintf(t, "bne %+d", (int8_t)op1); break;
     case  (0x09): sprintf(t, "beq %+d", (int8_t)op1); break;
     case  (0x0a): sprintf(t, "bpl %+d", (int8_t)op1); break;
@@ -162,8 +162,8 @@ void SuperFX::disassemble_alt2(char *output) {
     case  (0x03): sprintf(t, "lsr"); break;
     case  (0x04): sprintf(t, "rol"); break;
     case  (0x05): sprintf(t, "bra %+d", (int8_t)op1); break;
-    case  (0x06): sprintf(t, "blt %+d", (int8_t)op1); break;
-    case  (0x07): sprintf(t, "bge %+d", (int8_t)op1); break;
+    case  (0x06): sprintf(t, "bge %+d", (int8_t)op1); break;
+    case  (0x07): sprintf(t, "blt %+d", (int8_t)op1); break;
     case  (0x08): sprintf(t, "bne %+d", (int8_t)op1); break;
     case  (0x09): sprintf(t, "beq %+d", (int8_t)op1); break;
     case  (0x0a): sprintf(t, "bpl %+d", (int8_t)op1); break;
@@ -219,8 +219,8 @@ void SuperFX::disassemble_alt3(char *output) {
     case  (0x03): sprintf(t, "lsr"); break;
     case  (0x04): sprintf(t, "rol"); break;
     case  (0x05): sprintf(t, "bra %+d", (int8_t)op1); break;
-    case  (0x06): sprintf(t, "blt %+d", (int8_t)op1); break;
-    case  (0x07): sprintf(t, "bge %+d", (int8_t)op1); break;
+    case  (0x06): sprintf(t, "bge %+d", (int8_t)op1); break;
+    case  (0x07): sprintf(t, "blt %+d", (int8_t)op1); break;
     case  (0x08): sprintf(t, "bne %+d", (int8_t)op1); break;
     case  (0x09): sprintf(t, "beq %+d", (int8_t)op1); break;
     case  (0x0a): sprintf(t, "bpl %+d", (int8_t)op1); break;
