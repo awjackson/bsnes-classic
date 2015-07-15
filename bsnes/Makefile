@@ -7,11 +7,13 @@ ifeq ($(ui),)
   ui := ui-qt
 endif
 
+QT_PREFIX = /usr/local/opt/qt5
+
 # compiler
 c       := $(compiler) -x c -std=gnu99
 cpp     := $(compiler) -std=gnu++0x
 flags   := -O3 -fomit-frame-pointer -I. -I$(snes)
-link    :=
+link    := -F $(QT_PREFIX)/lib
 objects :=
 
 # comment this line to enable asserts

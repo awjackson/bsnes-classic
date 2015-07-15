@@ -1,4 +1,8 @@
-qtlibs := $(strip QtCore QtGui $(if $(findstring osx,$(platform)),QtOpenGL))
+qtlibs := $(strip QtCore QtWidgets QtGui $(if $(findstring osx,$(platform)),QtOpenGL))
+
+
+rcc = $(QT_PREFIX)/bin/rcc
+moc = $(QT_PREFIX)/bin/moc
 include $(ui)/template/Makefile
 
 ui_objects := ui-main ui-base ui-cartridge ui-debugger ui-input ui-movie ui-settings ui-state ui-tools

@@ -17,7 +17,7 @@ InputSettingsWindow::InputSettingsWindow() {
   list->setAllColumnsShowFocus(true);
   list->setSortingEnabled(false);
   list->header()->hide();
-  list->header()->setResizeMode(QHeaderView::ResizeToContents);
+  list->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
   layout->addWidget(list);
 
   controlLayout = new QHBoxLayout;
