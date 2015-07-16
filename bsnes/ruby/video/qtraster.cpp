@@ -17,6 +17,7 @@ public:
     void paintEvent(QPaintEvent*) {
       if(context.image == 0) return;
       QPainter painter(this);
+      painter.setRenderHints(QPainter::Qt4CompatiblePainting, true);
 
       if(size().width() == context.width && size().height() == context.height) {
         painter.drawImage(0, 0, *context.image);

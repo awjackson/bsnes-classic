@@ -168,6 +168,7 @@ void VramViewer::setDepthMode7() { bpp = 7; refresh(); }
 
 void VramViewer::Canvas::paintEvent(QPaintEvent*) {
   QPainter painter(this);
+  painter.setRenderHints(QPainter::Qt4CompatiblePainting, true);
   painter.drawImage(0, 0, *image);
 }
 
