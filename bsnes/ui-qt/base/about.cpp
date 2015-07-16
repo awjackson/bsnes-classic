@@ -47,6 +47,7 @@ AboutWindow::AboutWindow() {
 
 void AboutWindow::Logo::paintEvent(QPaintEvent*) {
   QPainter painter(this);
+  painter.setRenderHints(QPainter::Qt4CompatiblePainting, true);
   QPixmap pixmap(":/logo.png");
   painter.drawPixmap(0, 0, pixmap);
 }

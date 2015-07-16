@@ -118,6 +118,7 @@ OamViewer::OamViewer() {
 
 void OamViewer::Canvas::paintEvent(QPaintEvent*) {
   QPainter painter(this);
+  painter.setRenderHints(QPainter::Qt4CompatiblePainting, true);
   painter.drawImage(0, 0, *image);
 }
 

@@ -117,6 +117,7 @@ void CgramViewer::Canvas::mousePressEvent(QMouseEvent *event) {
 
 void CgramViewer::Canvas::paintEvent(QPaintEvent*) {
   QPainter painter(this);
+  painter.setRenderHints(QPainter::Qt4CompatiblePainting, true);
   painter.drawImage(0, 0, *image);
 }
 
