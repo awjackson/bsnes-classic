@@ -18,6 +18,7 @@ MainWindow::MainWindow() {
   system = menuBar->addMenu("&System");
 
   system_load = system->addAction("Load &Cartridge ...");
+  system_load->setShortcut(QKeySequence("Ctrl+C"));
 
   system_loadSpecial = system->addMenu("Load &Special");
 
@@ -34,6 +35,7 @@ MainWindow::MainWindow() {
   system->addAction(system_power = new CheckAction("&Power", 0));
 
   system_reset = system->addAction("&Reset");
+  system_reset->setShortcut(QKeySequence("Ctrl+R"));
 
   system->addSeparator();
 
@@ -60,6 +62,8 @@ MainWindow::MainWindow() {
 
   system_exit = system->addAction("E&xit");
   system_exit->setMenuRole(QAction::QuitRole);
+  system_exit->setShortcut(Qt::Key_Escape);
+  system_exit->setShortcutContext( Qt::ApplicationShortcut );
 
   settings = menuBar->addMenu("S&ettings");
 
@@ -176,12 +180,14 @@ MainWindow::MainWindow() {
   tools_cheatFinder = tools->addAction("Cheat &Finder ...");
 
   tools_stateManager = tools->addAction("&State Manager ...");
+  tools_stateManager->setShortcut(QKeySequence("Ctrl+M"));
 
   tools_effectToggle = tools->addAction("Effect &Toggle ...");
   if(!SNES::PPU::SupportsLayerEnable && !SNES::DSP::SupportsChannelEnable)
     tools_effectToggle->setVisible(false);
 
   tools_debugger = tools->addAction("&Debugger ...");
+  tools_debugger->setShortcut(QKeySequence("Ctrl+D"));
   #if !defined(DEBUGGER)
   tools_debugger->setVisible(false);
   #endif

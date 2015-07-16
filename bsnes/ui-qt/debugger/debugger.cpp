@@ -34,9 +34,13 @@ Debugger::Debugger() {
 
   menu_tools = menu->addMenu("Tools");
   menu_tools_disassembler = menu_tools->addAction("Disassembler ...");
+  //menu_tools_disassembler->setShortcut(QKeySequence("Ctrl+D"));
   menu_tools_breakpoint = menu_tools->addAction("Breakpoint Editor ...");
+  menu_tools_breakpoint->setShortcut(QKeySequence("Ctrl+B"));
   menu_tools_memory = menu_tools->addAction("Memory Editor ...");
+  menu_tools_memory->setShortcut(QKeySequence("Ctrl+M"));
   menu_tools_propertiesViewer = menu_tools->addAction("Properties Viewer ...");
+  menu_tools_propertiesViewer->setShortcut(QKeySequence("Ctrl+P"));
 
   menu_ppu = menu->addMenu("S-PPU");
   menu_ppu_vramViewer = menu_ppu->addAction("Video RAM Viewer ...");
@@ -64,18 +68,22 @@ Debugger::Debugger() {
   controlLayout->addLayout(commandLayout);
 
   runBreak = new QPushButton("Break");
+  runBreak->setShortcut(Qt::Key_B);
   commandLayout->addWidget(runBreak);
   commandLayout->addSpacing(Style::WidgetSpacing);
 
   stepInstruction = new QPushButton("Step");
+  stepInstruction->setShortcut(Qt::Key_Space);
   commandLayout->addWidget(stepInstruction);
 
   controlLayout->addSpacing(Style::WidgetSpacing);
 
   stepCPU = new QCheckBox("Step S-CPU");
+  stepCPU->setShortcut(Qt::Key_C);
   controlLayout->addWidget(stepCPU);
 
   stepSMP = new QCheckBox("Step S-SMP");
+  stepSMP->setShortcut(Qt::Key_S);
   controlLayout->addWidget(stepSMP);
 
   traceCPU = new QCheckBox("Trace S-CPU opcodes");
@@ -153,6 +161,7 @@ void Debugger::modifySystemState(unsigned state) {
 
 void Debugger::synchronize() {
   runBreak->setText(application.debug ? "Run" : "Break");
+  application.debug ? runBreak->setShortcut(Qt::Key_R) : runBreak->setShortcut(Qt::Key_B);
   stepInstruction->setEnabled(SNES::cartridge.loaded() && application.debug && (stepCPU->isChecked() || stepSMP->isChecked()));
   SNES::debugger.step_cpu = application.debug && stepCPU->isChecked();
   SNES::debugger.step_smp = application.debug && stepSMP->isChecked();
