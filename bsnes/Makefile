@@ -7,6 +7,9 @@ ifeq ($(ui),)
   ui := ui-qt
 endif
 
+# Custom QT Path
+#QT_PATH := /usr/local/Cellar/qt/4.8.7
+
 # compiler
 c       := $(compiler) -x c -std=gnu99
 cpp     := $(compiler) -std=gnu++0x
