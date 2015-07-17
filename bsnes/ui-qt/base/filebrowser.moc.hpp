@@ -11,6 +11,8 @@ public:
   enum CartridgeMode { LoadDirect, LoadBase, LoadSlot1, LoadSlot2 } cartridgeMode;
   void loadCartridge(CartridgeMode, signed = -1);
 
+  void onAcceptCartridge(const string&);
+
   FileBrowser();
 
 private slots:
@@ -28,7 +30,6 @@ private:
 
   string resolveFilename(const string&);
   void onChangeCartridge(const string&);
-  void onAcceptCartridge(const string&);
 
   void acceptNormal(const string &filename);
   void acceptBsx(const string &filename);

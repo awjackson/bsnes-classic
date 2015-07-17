@@ -137,4 +137,11 @@ Configuration::Configuration() {
   attach(geometry.oamViewer        = "", "geometry.oamViewer");
   attach(geometry.cgramViewer      = "", "geometry.cgramViewer");
   attach(geometry.debuggerOptions  = "", "geometry.debuggerOptions");
+
+  for (int i=0; i < NUMFILES; i++)
+  {
+    char str[25];
+    sprintf(str, "recentFile%d", i);
+    attach(recentFiles[i] = "", str);
+  }
 }
