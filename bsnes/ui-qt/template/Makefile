@@ -9,21 +9,29 @@
 # $(qtinc) -- includes for compiling
 # $(qtlib) -- libraries for linking
 
+ifeq ($(QT_PATH),)
+  QT_PATH_LIB := /Library/Frameworks
+else
+  QT_PATH_LIB := $(QT_PATH)/lib
+  moc := $(QT_PATH)/bin/moc
+  rcc := $(QT_PATH)/bin/rcc
+endif
+
 ifeq ($(moc),)
-moc := moc
+  moc := moc
 endif
 
 ifeq ($(rcc),)
-rcc := rcc
+  rcc := rcc
 endif
 
 ifeq ($(platform),x)
   qtinc := `pkg-config --cflags $(qtlibs)`
   qtlib := `pkg-config --libs $(qtlibs)`
 else ifeq ($(platform),osx)
-  qtinc := $(foreach lib,$(qtlibs),-I/Library/Frameworks/$(lib).framework/Versions/4/Headers)
+  qtinc := $(foreach lib,$(qtlibs),-I$(QT_PATH_LIB)/$(lib).framework/Versions/4/Headers)
 
-  qtlib := -L/Library/Frameworks
+  qtlib := -L$(QT_PATH_LIB) -F$(QT_PATH_LIB)
   qtlib += $(foreach lib,$(qtlibs),-framework $(lib))
   qtlib += -framework Carbon
   qtlib += -framework Cocoa
