@@ -114,7 +114,6 @@ void Application::run() {
     return;
   }
 
-  QApplication::processEvents();
   utility.updateSystemState();
   mapper().poll();
 
