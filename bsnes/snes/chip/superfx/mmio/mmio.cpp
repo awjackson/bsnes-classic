@@ -65,6 +65,7 @@ void SuperFX::mmio_write(unsigned addr, uint8 data) {
     } else {
       regs.r[n] = (data << 8) | (regs.r[n] & 0xff);
     }
+    if(n == 14) rombuffer_update();
 
     if(addr == 0x301f) regs.sfr.g = 1;
     return;

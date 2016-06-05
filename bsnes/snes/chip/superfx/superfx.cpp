@@ -26,14 +26,15 @@ void SuperFX::enter() {
       continue;
     }
 
-    op_exec(peekpipe());
-    if(r15_modified == false) regs.r[15]++;
+    uint8 changedreg = op_exec(peekpipe());
+    if(changedreg != 15) {
+      regs.r[15]++;
+      if(changedreg == 14) rombuffer_update();
+    }
   }
 }
 
 void SuperFX::init() {
-  regs.r[14].on_modify = { &SuperFX::r14_modify, this };
-  regs.r[15].on_modify = { &SuperFX::r15_modify, this };
 }
 
 void SuperFX::enable() {

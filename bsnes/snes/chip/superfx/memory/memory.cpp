@@ -33,14 +33,12 @@ uint8 SuperFX::op_read(uint16 addr) {
 uint8 SuperFX::peekpipe() {
   uint8 result = regs.pipeline;
   regs.pipeline = op_read(regs.r[15]);
-  r15_modified = false;
   return result;
 }
 
 uint8 SuperFX::pipe() {
   uint8 result = regs.pipeline;
   regs.pipeline = op_read(++regs.r[15]);
-  r15_modified = false;
   return result;
 }
 
