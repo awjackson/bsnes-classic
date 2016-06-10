@@ -27,7 +27,9 @@ void SuperFX::enter() {
     }
 
     uint8 changedreg = op_exec(peekpipe());
-    if(changedreg != 15) {
+    if(changedreg == 15) {
+      cache_finish();
+    } else {
       regs.r[15]++;
       if(changedreg == 14) rombuffer_update();
     }

@@ -73,9 +73,8 @@ void SuperFX::mmio_write(unsigned addr, uint8 data) {
 
   switch(addr) {
     case 0x3030: {
-      bool g = regs.sfr.g;
       regs.sfr = (regs.sfr & 0xff00) | (data << 0);
-      if(g == 1 && regs.sfr.g == 0) {
+      if(regs.sfr.g == 0) {
         regs.cbr = 0x0000;
         cache_flush();
       }

@@ -35,10 +35,10 @@ struct sfr_t {
 };
 
 struct scmr_t {
-  unsigned ht;
   bool ron;
   bool ran;
-  unsigned md;
+  uint8 ht;
+  uint8 md;
 
   operator unsigned() const {
     return ((ht >> 1) << 5) | (ron << 4) | (ran << 3) | ((ht & 1) << 2) | (md);
@@ -142,6 +142,8 @@ struct regs_t {
 } regs;
 
 struct cache_t {
+  enum { Flushed = 0xfff0 };
+  uint16 partial;
   uint8 buffer[512];
   bool valid[32];
 } cache;

@@ -59,6 +59,7 @@ void SuperFX::serialize(serializer &s) {
   s.integer(regs.sreg);
   s.integer(regs.dreg);
 
+  s.integer(cache.partial);
   s.array(cache.buffer);
   s.array(cache.valid);
 
