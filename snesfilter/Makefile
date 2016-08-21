@@ -3,17 +3,30 @@ include nall/Makefile
 qtlibs := QtCore QtGui
 include nall/qt/Makefile
 
-c     := $(compiler) -x c -std=gnu99
+c     := $(compiler) -xc -std=gnu99
 cpp   := $(compiler) -std=gnu++0x
-flags := -O3 -I. -Iobj -fomit-frame-pointer $(qtinc)
+flags := -I. -Iobj $(qtinc)
 link  :=
+
+ifeq ($(DEBUG), 1)
+  flags += -O0 -g -DDEBUG
+else
+  flags += -O3 -fomit-frame-pointer -DNDEBUG -march=native
+endif
+
+# silence warnings
+flags += -Wno-switch -Wno-absolute-value -Wno-parentheses
 
 ifeq ($(platform),x)
   flags := -fPIC -fopenmp $(flags)
   link += -s -fopenmp -lpthread -lgomp
 else ifeq ($(platform),osx)
-  flags := -fPIC -fopenmp $(flags)
-  link += -fopenmp -lpthread -lgomp
+# TODO: openmp not currently supported in Apple clang
+#  flags := -fPIC -fopenmp $(flags)
+#  link += -fopenmp -lpthread -lgomp 
+  flags := -fPIC $(flags)
+  link += -lpthread
+  link += -F/usr/local/lib
 else ifeq ($(platform),win)
   flags := -fopenmp $(flags)
   link += -fopenmp -lpthread
