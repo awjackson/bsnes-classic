@@ -18,17 +18,14 @@ ifeq ($(platform),)
   uname := $(shell uname -a)
   ifdef SystemRoot
     platform := win
+    delete = del $(subst /,\,$1)
   else ifneq ($(findstring Darwin,$(uname)),)
     platform := osx
+    delete = rm -f $1
   else
     platform := x
+    delete = rm -f $1
   endif
-endif
-
-ifeq ($(platform),win)
-  delete = del $(subst /,\,$1)
-else
-  delete = rm -f $1
 endif
 
 ifeq ($(compiler),)
