@@ -11,7 +11,7 @@ link  :=
 ifeq ($(DEBUG), 1)
   flags += -O0 -g -DDEBUG
 else
-  flags += -O3 -fomit-frame-pointer -DNDEBUG -march=native
+  flags += -O3 -fomit-frame-pointer -DNDEBUG 
 endif
 
 # silence warnings
