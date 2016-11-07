@@ -1,5 +1,7 @@
 # bsnes-classic
 
+This fork of bsnes-classic also includes perfect emulation of Super FX and Super FX 2 games as well as an experimental upscaling 6xBRZ filter. All courtesy of Zenju, CarterLi and awjackson
+
 ## Building on Windows (64-bit)
 
 - Get mingw-w64 with 64-bit Qt 4.8.6 and do a full installation of the exe (https://sourceforge.net/projects/qt64ng/files/qt/x86-64/4.8.6/mingw-4.9/seh/)
