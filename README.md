@@ -1,6 +1,6 @@
 # bsnes-classic
 
-This fork of bsnes-classic also includes perfect emulation of Super FX and Super FX 2 games as well as an experimental upscaling 6xBRZ filter. All courtesy of Zenju, CarterLi and awjackson
+This fork of bsnes-classic also includes perfect emulation of Super FX and Super FX 2 games as well as an experimental upscaling 6xBRZ filter for OpenGL. All courtesy of Zenju, CarterLi and awjackson.
 
 ## Building on Windows (64-bit)
 
