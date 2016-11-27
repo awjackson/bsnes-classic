@@ -1,4 +1,85 @@
 #include "main.moc"
+
+void MainWindow::updateRecentFiles()
+{
+  // there's 2 possibilities
+  // 1. loaded file already in recent list
+  // 2. not so
+
+  int x;
+  Configuration &c = config();
+  MainWindow::RecentFiles &recentFiles = mainWindow->recentFiles;
+  for (x=0; x < recentFiles.active_slots; x++)
+  {
+    //fprintf (stderr,"%s == %s\n", cartridge.fileName(),c.recentFiles[x]());
+    if (!strcmp(cartridge.fileName(),c.recentFiles[x]()))
+      break;
+  }
+  //fprintf (stderr,"x = %d\n", x);
+  if (x==0 && recentFiles.active_slots != 0)
+    return;
+
+  // 1. load file already in recent list
+  //// 1a. loaded most recent file, which case do nothing
+  //// 1b. loaded another file,
+  ////// place file in first slot
+  ////// move files thru the list
+  if (x < recentFiles.active_slots)
+  {
+    QString qs = recentFiles.actions[x]->text();
+    string s = qs.toUtf8().data();
+    // rearrange actual actions[]
+    string &this_index_backup = s;
+    for (int i=x-1; i >= 0; i--)
+    {
+      //fprintf(stderr,"%d\n",i);
+      recentFiles.actions[i+1]->setText(recentFiles.actions[i]->text());
+      c.recentFiles[i+1] = c.recentFiles[i];
+    }
+    recentFiles.actions[0]->setText(qs);
+    c.recentFiles[0] = s;
+  }
+  else
+  {
+    // 2. loaded file not yet in list
+    //add to list
+    if (recentFiles.active_slots < Configuration::NUMFILES)
+    {
+      // add a slot
+      int s = recentFiles.active_slots;
+      recentFiles.actions[s] = new RecentFileAction(c.recentFiles[s](),mainWindow->system_load_recent, s);
+      mainWindow->system_load_recent->addAction(recentFiles.actions[s]);
+      connect(recentFiles.actions[s], SIGNAL(triggered()), recentFiles.actions[s], SLOT(load()));
+      recentFiles.active_slots++;
+    }
+    // move everything up the list
+    for (int i=recentFiles.active_slots-1; i > 0; i--)
+    {
+      recentFiles.actions[i]->setText(recentFiles.actions[i-1]->text());
+      c.recentFiles[i] = c.recentFiles[i-1];
+    }
+    recentFiles.actions[0]->setText(cartridge.fileName());
+    c.recentFiles[0] = cartridge.fileName();
+  }
+}
+
+RecentFileAction::RecentFileAction(const QString & text, QObject * parent, int id) :
+QAction(text, parent),
+id(id)
+{
+
+}
+
+void RecentFileAction::load()
+{
+  QString qs = text();
+  string s = qs.toUtf8().data();
+  fileBrowser->cartridgeMode = FileBrowser::CartridgeMode::LoadDirect;
+  fileBrowser->onAcceptCartridge(s);
+  mainWindow->updateRecentFiles();
+}
+
+
 MainWindow *mainWindow;
 
 MainWindow::MainWindow() {
@@ -18,6 +99,20 @@ MainWindow::MainWindow() {
   system = menuBar->addMenu("&System");
 
   system_load = system->addAction("Load &Cartridge ...");
+  system_load->setShortcut(QKeySequence("Ctrl+C"));
+
+  recentFiles.active_slots = 0;
+  system_load_recent = system->addMenu("Load Recent Cartridge ...");
+  for (int i=0; i < Configuration::NUMFILES; i++)
+  {
+    if (strcmp(config().recentFiles[i](), ""))
+    {
+      recentFiles.active_slots++;
+      recentFiles.actions[i] = new RecentFileAction(config().recentFiles[i](),system_load_recent, i);
+      system_load_recent->addAction(recentFiles.actions[i]);
+      connect(recentFiles.actions[i], SIGNAL(triggered()), recentFiles.actions[i], SLOT(load()));
+    }
+  }
 
   system_loadSpecial = system->addMenu("Load &Special");
 
@@ -34,6 +129,7 @@ MainWindow::MainWindow() {
   system->addAction(system_power = new CheckAction("&Power", 0));
 
   system_reset = system->addAction("&Reset");
+  system_reset->setShortcut(QKeySequence("Ctrl+R"));
 
   system->addSeparator();
 
@@ -60,6 +156,8 @@ MainWindow::MainWindow() {
 
   system_exit = system->addAction("E&xit");
   system_exit->setMenuRole(QAction::QuitRole);
+  system_exit->setShortcut(Qt::Key_Escape);
+  system_exit->setShortcutContext( Qt::ApplicationShortcut );
 
   settings = menuBar->addMenu("S&ettings");
 
@@ -176,12 +274,14 @@ MainWindow::MainWindow() {
   tools_cheatFinder = tools->addAction("Cheat &Finder ...");
 
   tools_stateManager = tools->addAction("&State Manager ...");
+  tools_stateManager->setShortcut(QKeySequence("Ctrl+M"));
 
   tools_effectToggle = tools->addAction("Effect &Toggle ...");
   if(!SNES::PPU::SupportsLayerEnable && !SNES::DSP::SupportsChannelEnable)
     tools_effectToggle->setVisible(false);
 
   tools_debugger = tools->addAction("&Debugger ...");
+  tools_debugger->setShortcut(QKeySequence("Ctrl+D"));
   #if !defined(DEBUGGER)
   tools_debugger->setVisible(false);
   #endif
@@ -384,6 +484,7 @@ bool MainWindow::isActive() {
 void MainWindow::loadCartridge() {
   fileBrowser->setWindowTitle("Load Cartridge");
   fileBrowser->loadCartridge(FileBrowser::LoadDirect);
+  updateRecentFiles();
 }
 
 void MainWindow::loadBsxSlottedCartridge() {
@@ -648,6 +749,7 @@ void CanvasObject::dropEvent(QDropEvent *event) {
   if(event->mimeData()->hasUrls()) {
     QList<QUrl> list = event->mimeData()->urls();
     if(list.count() == 1) cartridge.loadNormal(list.at(0).toLocalFile().toUtf8().constData());
+    mainWindow->updateRecentFiles();
   }
 }
 

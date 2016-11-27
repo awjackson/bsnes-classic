@@ -13,15 +13,31 @@ public:
   void paintEvent(QPaintEvent*);
 };
 
+class RecentFileAction : public QAction {
+  Q_OBJECT
+public:
+  RecentFileAction(const QString & text, QObject * parent, int id);
+  int id;
+public slots:
+  void load();
+};
+
 class MainWindow : public Window {
   Q_OBJECT
 
 public:
+  void updateRecentFiles();
   QMenuBar *menuBar;
   QStatusBar *statusBar;
   QVBoxLayout *layout;
   QMenu *system;
     QAction *system_load;
+    QMenu *system_load_recent;
+      struct RecentFiles
+      {
+        RecentFileAction *actions[Configuration::NUMFILES];
+        int active_slots;
+      } recentFiles;
     QMenu *system_loadSpecial;
       QAction *system_loadSpecial_bsxSlotted;
       QAction *system_loadSpecial_bsx;

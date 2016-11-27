@@ -102,6 +102,9 @@ public:
     string debuggerOptions;
   } geometry;
 
+  static const int NUMFILES=10;
+  string recentFiles[NUMFILES];
+
   bool load(const char *filename);
   Configuration();
 };
