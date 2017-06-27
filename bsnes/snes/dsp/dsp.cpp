@@ -337,7 +337,6 @@ void DSP::reset() {
 #endif
 
   REG(flg) = 0xe0;
-  REG(endx) = 0xff;
 
   state.noise              = 0x4000;
   state.echo_hist_pos      = 0;
