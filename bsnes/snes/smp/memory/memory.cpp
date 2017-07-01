@@ -80,13 +80,11 @@ alwaysinline void SMP::op_buswrite(uint16 addr, uint8 data) {
         if(regs.p.p) break;  //writes only valid when P flag is clear
 
         status.clock_speed     = (data >> 6) & 3;
-        status.timer_speed     = (data >> 4) & 3;
+        status.ram_speed       = (data >> 4) & 3;
         status.timers_enabled  = data & 0x08;
         status.ram_disabled    = data & 0x04;
         status.ram_writable    = data & 0x02;
         status.timers_disabled = data & 0x01;
-
-        status.timer_step = (1 << status.clock_speed) + (2 << status.timer_speed);
 
         t0.sync_stage1();
         t1.sync_stage1();
@@ -176,23 +174,29 @@ alwaysinline void SMP::op_buswrite(uint16 addr, uint8 data) {
   ram_write(addr, data);
 }
 
+unsigned SMP::speed(uint16 addr) const {
+  if((addr & 0xfff0) == 0x00f0) return status.clock_speed;
+  if(addr >= 0xffc0 && status.iplrom_enabled) return status.clock_speed;
+  return status.ram_speed;
+}
+
 void SMP::op_io() {
   add_clocks(24);
-  cycle_edge();
+  cycle_edge(status.clock_speed);
 }
 
 uint8 SMP::op_read(uint16 addr) {
   add_clocks(12);
   uint8 r = op_busread(addr);
   add_clocks(12);
-  cycle_edge();
+  cycle_edge(speed(addr));
   return r;
 }
 
 void SMP::op_write(uint16 addr, uint8 data) {
   add_clocks(24);
   op_buswrite(addr, data);
-  cycle_edge();
+  cycle_edge(speed(addr));
 }
 
 #endif

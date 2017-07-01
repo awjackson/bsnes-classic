@@ -9,25 +9,23 @@ void SMP::add_clocks(unsigned clocks) {
   if(clock > +(768 * 24 * (int64)24000000)) synchronize_cpu();
 }
 
-void SMP::cycle_edge() {
-  t0.tick();
-  t1.tick();
-  t2.tick();
+void SMP::cycle_edge(unsigned speed) {
+  static const uint8 wait_states[] = {0, 24*1, 24*4, 24*9};
+  static const uint8 timer_ticks[] = {3*1, 3*2, 3*4, 3*8};
 
-  //TEST register S-SMP speed control
+  unsigned ticks = timer_ticks[speed];
+  t0.tick(ticks);
+  t1.tick(ticks);
+  t2.tick(ticks);
+
   //24 clocks have already been added for this cycle at this point
-  switch(status.clock_speed) {
-    case 0: break;                       //100% speed
-    case 1: add_clocks(24); break;       // 50% speed
-    case 2: while(true) add_clocks(24);  //  0% speed -- locks S-SMP
-    case 3: add_clocks(24 * 9); break;   // 10% speed
-  }
+  if(speed) add_clocks(wait_states[speed]);
 }
 
 template<unsigned timer_frequency>
-void SMP::sSMPTimer<timer_frequency>::tick() {
+void SMP::sSMPTimer<timer_frequency>::tick(unsigned step) {
   //stage 0 increment
-  stage0_ticks += smp.status.timer_step;
+  stage0_ticks += step;
   if(stage0_ticks < timer_frequency) return;
   stage0_ticks -= timer_frequency;
 
