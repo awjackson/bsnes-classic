@@ -11,7 +11,7 @@ void SMP::add_clocks(unsigned clocks) {
 
 void SMP::cycle_edge(unsigned speed) {
   static const uint8 wait_states[] = {0, 24*1, 24*4, 24*9};
-  static const uint8 timer_ticks[] = {3*1, 3*2, 3*4, 3*8};
+  static const uint8 timer_ticks[] = {1, 2, 4, 8};
 
   unsigned ticks = timer_ticks[speed];
   t0.tick(ticks);
